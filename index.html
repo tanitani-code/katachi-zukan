@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>かたち図鑑</title>
+  <style>
+    /* ===== リセット・基本 ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fffde7;
+      --card-radius: 32px;
+      --bounce-duration: 0.45s;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      touch-action: manipulation; /* ダブルタップズーム無効 */
+    }
+
+    /* ===== ヘッダー ===== */
+    header {
+      width: 100%;
+      text-align: center;
+      padding: 24px 16px 8px;
+    }
+
+    header h1 {
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      color: #f57f17;
+      letter-spacing: 0.15em;
+      text-shadow: 2px 2px 0 #ffe082;
+    }
+
+    header p {
+      font-size: clamp(0.85rem, 3.5vw, 1rem);
+      color: #a1887f;
+      margin-top: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== グリッド ===== */
+    main {
+      width: 100%;
+      max-width: 480px;
+      padding: 12px 16px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ハートは最後で1列幅中央に */
+    .card:last-child {
+      grid-column: 1 / -1;
+      max-width: 200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ===== カード ===== */
+    .card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+      padding: 28px 16px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s, transform 0.15s;
+      /* 誤タップ対策：最小タップ領域 */
+      min-height: 160px;
+    }
+
+    .card:active {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    /* ===== バウンスアニメーション ===== */
+    @keyframes bounce {
+      0%   { transform: scale(1) translateY(0); }
+      20%  { transform: scale(0.88, 1.10) translateY(0); }
+      40%  { transform: scale(1.18, 0.88) translateY(-28px); }
+      55%  { transform: scale(0.94, 1.06) translateY(0); }
+      70%  { transform: scale(1.08, 0.94) translateY(-12px); }
+      82%  { transform: scale(0.98, 1.02) translateY(0); }
+      92%  { transform: scale(1.03, 0.98) translateY(-5px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    .shape-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 90px;
+    }
+
+    .shape-wrap.bouncing {
+      animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    /* ===== ラベル ===== */
+    .label {
+      font-size: clamp(1.3rem, 5.5vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== 図形ごとの色 ===== */
+    /* まる */
+    .card[data-shape="maru"]         { background: #fff8e1; }
+    .card[data-shape="maru"] .label  { color: #f57f17; }
+
+    /* さんかく */
+    .card[data-shape="sankaku"]         { background: #e8f5e9; }
+    .card[data-shape="sankaku"] .label  { color: #2e7d32; }
+
+    /* しかく */
+    .card[data-shape="shikaku"]         { background: #e3f2fd; }
+    .card[data-shape="shikaku"] .label  { color: #1565c0; }
+
+    /* ほし */
+    .card[data-shape="hoshi"]         { background: #fce4ec; }
+    .card[data-shape="hoshi"] .label  { color: #c62828; }
+
+    /* ハート */
+    .card[data-shape="haato"]         { background: #fce4ec; }
+    .card[data-shape="haato"] .label  { color: #ad1457; }
+
+    /* ===== CSS図形 ===== */
+
+    /* まる */
+    .shape-maru {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #ffca28;
+      box-shadow: 0 4px 12px rgba(255,202,40,0.5);
+    }
+
+    /* さんかく */
+    .shape-sankaku {
+      width: 0;
+      height: 0;
+      border-left: 44px solid transparent;
+      border-right: 44px solid transparent;
+      border-bottom: 80px solid #66bb6a;
+      filter: drop-shadow(0 4px 8px rgba(102,187,106,0.5));
+    }
+
+    /* しかく */
+    .shape-shikaku {
+      width: 78px;
+      height: 78px;
+      background: #42a5f5;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(66,165,245,0.5);
+    }
+
+    /* ほし（clip-path） */
+    .shape-hoshi {
+      width: 84px;
+      height: 84px;
+      background: #ef5350;
+      clip-path: polygon(
+        50% 0%,
+        61% 35%, 98% 35%,
+        68% 57%, 79% 91%,
+        50% 70%, 21% 91%,
+        32% 57%, 2% 35%,
+        39% 35%
+      );
+      filter: drop-shadow(0 4px 8px rgba(239,83,80,0.5));
+    }
+
+    /* ハート（CSS trick） */
+    .shape-haato {
+      position: relative;
+      width: 80px;
+      height: 72px;
+    }
+
+    .shape-haato::before,
+    .shape-haato::after {
+      content: "";
+      position: absolute;
+      width: 44px;
+      height: 68px;
+      background: #ec407a;
+      border-radius: 44px 44px 0 0;
+      box-shadow: 0 4px 12px rgba(236,64,122,0.4);
+    }
+
+    .shape-haato::before {
+      left: 18px;
+      transform: rotate(-45deg);
+      transform-origin: 0 100%;
+    }
+
+    .shape-haato::after {
+      left: 18px;
+      transform: rotate(45deg);
+      transform-origin: 100% 100%;
+    }
+
+    /* ===== 誤タップ防止オーバーレイ（タップ中は他のカードを無効化） ===== */
+    body.locked .card { pointer-events: none; }
+    body.locked .card.active-card { pointer-events: auto; }
+
+    /* ===== フッター ===== */
+    footer {
+      padding: 0 0 24px;
+      color: #bcaaa4;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🌈 かたち図鑑</h1>
+  <p>たっぷして あそぼう！</p>
+</header>
+
+<main id="grid">
+  <!-- まる -->
+  <div class="card" data-shape="maru" data-sound="sounds/maru.mp3">
+    <div class="shape-wrap">
+      <div class="shape-maru"></div>
+    </div>
+    <span class="label">まる</span>
+  </div>
+
+  <!-- さんかく -->
+  <div class="card" data-shape="sankaku" data-sound="sounds/sankaku.mp3">
+    <div class="shape-wrap">
+      <div class="shape-sankaku"></div>
+    </div>
+    <span class="label">さんかく</span>
+  </div>
+
+  <!-- しかく -->
+  <div class="card" data-shape="shikaku" data-sound="sounds/shikaku.mp3">
+    <div class="shape-wrap">
+      <div class="shape-shikaku"></div>
+    </div>
+    <span class="label">しかく</span>
+  </div>
+
+  <!-- ほし -->
+  <div class="card" data-shape="hoshi" data-sound="sounds/hoshi.mp3">
+    <div class="shape-wrap">
+      <div class="shape-hoshi"></div>
+    </div>
+    <span class="label">ほし</span>
+  </div>
+
+  <!-- ハート -->
+  <div class="card" data-shape="haato" data-sound="sounds/haato.mp3">
+    <div class="shape-wrap">
+      <div class="shape-haato"></div>
+    </div>
+    <span class="label">ハート</span>
+  </div>
+</main>
+
+<footer>かたち図鑑 ✦ 2さいから</footer>
+
+<script>
+  // 音声キャッシュ（読み込み済みを再利用）
+  const audioCache = {};
+
+  function getAudio(src) {
+    if (!audioCache[src]) {
+      audioCache[src] = new Audio(src);
+    }
+    return audioCache[src];
+  }
+
+  // 誤タップ防止：アニメーション中は他カードを無効化
+  let isAnimating = false;
+
+  document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("click", () => {
+      if (isAnimating) return;
+
+      isAnimating = true;
+      const wrap = card.querySelector(".shape-wrap");
+      const src  = card.dataset.sound;
+
+      // バウンス
+      wrap.classList.add("bouncing");
+
+      // 音声再生（前回途中なら先頭から）
+      const audio = getAudio(src);
+      audio.currentTime = 0;
+      audio.play().catch(() => {
+        // ブラウザのautoplay制限は無視（タップ起因なので通常は再生される）
+      });
+
+      // アニメーション終了後にリセット
+      const BOUNCE_MS = 450;
+      setTimeout(() => {
+        wrap.classList.remove("bouncing");
+        isAnimating = false;
+      }, BOUNCE_MS);
+    });
+  });
+
+  // タッチデバイスで 300ms 遅延をなくす（pointer events対応ブラウザ向け）
+  // viewport に user-scalable=no を設定済みなので追加対策のみ
+  document.addEventListener("touchstart", () => {}, { passive: true });
+</script>
+
+</body>
+</html>
