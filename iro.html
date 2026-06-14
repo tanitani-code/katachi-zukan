@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>いろ図鑑</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f3f8ff;
+      --card-radius: 32px;
+      --bounce-duration: 0.45s;
+      --s: clamp(44px, 10dvh, 78px);
+    }
+
+    html, body {
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    /* ===== ナビ ===== */
+    nav {
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 12px) 16px 0;
+      flex-shrink: 0;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: clamp(0.8rem, 3.5vw, 1rem);
+      font-weight: 700;
+      color: #5c6bc0;
+      text-decoration: none;
+      background: #e8eaf6;
+      border-radius: 20px;
+      padding: 6px 16px 6px 10px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ===== ヘッダー ===== */
+    header {
+      width: 100%;
+      text-align: center;
+      padding: clamp(6px, 1.5dvh, 16px) 16px clamp(4px, 1dvh, 8px);
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 5vw, 2rem);
+      color: #5c6bc0;
+      letter-spacing: 0.15em;
+      text-shadow: 2px 2px 0 #c5cae9;
+    }
+
+    header p {
+      font-size: clamp(0.75rem, 3vw, 1rem);
+      color: #9575cd;
+      margin-top: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== グリッド ===== */
+    main {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.5dvh, 14px);
+    }
+
+    /* ===== カード ===== */
+    .card {
+      border-radius: var(--card-radius);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+      padding: clamp(8px, 2dvh, 22px) 8px clamp(6px, 1.5dvh, 16px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(4px, 1dvh, 12px);
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s;
+      overflow: hidden;
+    }
+
+    .card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
+
+    /* ===== バウンス ===== */
+    @keyframes bounce {
+      0%   { transform: scale(1) translateY(0); }
+      20%  { transform: scale(0.88, 1.10) translateY(0); }
+      40%  { transform: scale(1.18, 0.88) translateY(-28px); }
+      55%  { transform: scale(0.94, 1.06) translateY(0); }
+      70%  { transform: scale(1.08, 0.94) translateY(-12px); }
+      82%  { transform: scale(0.98, 1.02) translateY(0); }
+      92%  { transform: scale(1.03, 0.98) translateY(-5px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    .shape-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: clamp(52px, 12dvh, 90px);
+      flex-shrink: 0;
+    }
+
+    .shape-wrap.bouncing {
+      animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    /* 丸 */
+    .dot {
+      width: var(--s);
+      height: var(--s);
+      border-radius: 50%;
+    }
+
+    .label {
+      font-size: clamp(0.95rem, 4.5vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      line-height: 1;
+    }
+
+    /* ===== 各色カード ===== */
+    .card[data-color="aka"]    { background: #fff5f5; }
+    .card[data-color="aka"] .dot   { background: #e53935; box-shadow: 0 4px 14px rgba(229,57,53,0.45); }
+    .card[data-color="aka"] .label { color: #b71c1c; }
+
+    .card[data-color="ao"]     { background: #e3f2fd; }
+    .card[data-color="ao"] .dot    { background: #1e88e5; box-shadow: 0 4px 14px rgba(30,136,229,0.45); }
+    .card[data-color="ao"] .label  { color: #0d47a1; }
+
+    .card[data-color="kiiro"]  { background: #fffde7; }
+    .card[data-color="kiiro"] .dot  { background: #fdd835; box-shadow: 0 4px 14px rgba(253,216,53,0.55); }
+    .card[data-color="kiiro"] .label{ color: #f57f17; }
+
+    .card[data-color="midori"] { background: #e8f5e9; }
+    .card[data-color="midori"] .dot { background: #43a047; box-shadow: 0 4px 14px rgba(67,160,71,0.45); }
+    .card[data-color="midori"] .label{ color: #1b5e20; }
+
+    /* しろ：丸に枠線をつけて視認性を確保 */
+    .card[data-color="shiro"]  { background: #eceff1; }
+    .card[data-color="shiro"] .dot  {
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12), inset 0 0 0 3px #cfd8dc;
+    }
+    .card[data-color="shiro"] .label{ color: #546e7a; }
+
+    .card[data-color="kuro"]   { background: #eeeeee; }
+    .card[data-color="kuro"] .dot   { background: #212121; box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
+    .card[data-color="kuro"] .label { color: #212121; }
+
+    footer {
+      flex-shrink: 0;
+      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
+      color: #b0bec5;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html">◀ かたち図鑑</a>
+</nav>
+
+<header>
+  <h1>🎨 いろ図鑑</h1>
+  <p>たっぷして あそぼう！</p>
+</header>
+
+<main>
+  <div class="card" data-color="aka" data-sound="sounds/aka.mp3">
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">あか</span>
+  </div>
+
+  <div class="card" data-color="ao" data-sound="sounds/ao.mp3">
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">あお</span>
+  </div>
+
+  <div class="card" data-color="kiiro" data-sound="sounds/kiiro.mp3">
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">きいろ</span>
+  </div>
+
+  <div class="card" data-color="midori" data-sound="sounds/midori.mp3">
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">みどり</span>
+  </div>
+
+  <div class="card" data-color="shiro" data-sound="sounds/shiro.mp3">
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">しろ</span>
+  </div>
+
+  <div class="card" data-color="kuro" data-sound="sounds/kuro.mp3">
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">くろ</span>
+  </div>
+</main>
+
+<footer>いろ図鑑 ✦ 2さいから</footer>
+
+<script>
+  const audioCache = {};
+  function getAudio(src) {
+    if (!audioCache[src]) audioCache[src] = new Audio(src);
+    return audioCache[src];
+  }
+
+  let isAnimating = false;
+  document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("click", () => {
+      if (isAnimating) return;
+      isAnimating = true;
+      const wrap = card.querySelector(".shape-wrap");
+      wrap.classList.add("bouncing");
+      const audio = getAudio(card.dataset.sound);
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+      setTimeout(() => {
+        wrap.classList.remove("bouncing");
+        isAnimating = false;
+      }, 450);
+    });
+  });
+
+  document.addEventListener("touchstart", () => {}, { passive: true });
+</script>
+
+</body>
+</html>

@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>かたち図鑑</title>
   <style>
-    /* ===== リセット・基本 ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -14,54 +13,52 @@
       --bounce-duration: 0.45s;
     }
 
+    html, body {
+      height: 100dvh;
+      overflow: hidden;
+    }
+
     body {
       background: var(--bg);
       font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
-      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow-x: hidden;
-      touch-action: manipulation; /* ダブルタップズーム無効 */
+      touch-action: manipulation;
     }
 
-    /* ===== ヘッダー ===== */
     header {
       width: 100%;
       text-align: center;
-      padding: 24px 16px 8px;
+      padding: clamp(8px, 2.5dvh, 20px) 16px clamp(4px, 1dvh, 8px);
+      flex-shrink: 0;
     }
 
     header h1 {
-      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      font-size: clamp(1.2rem, 5vw, 2rem);
       color: #f57f17;
       letter-spacing: 0.15em;
       text-shadow: 2px 2px 0 #ffe082;
     }
 
     header p {
-      font-size: clamp(0.85rem, 3.5vw, 1rem);
+      font-size: clamp(0.75rem, 3vw, 1rem);
       color: #a1887f;
-      margin-top: 4px;
+      margin-top: 2px;
       letter-spacing: 0.1em;
     }
 
-    /* ===== グリッド ===== */
+    /* ===== グリッド：2列×3行 均等配置 ===== */
     main {
+      flex: 1;
+      min-height: 0;          /* flex子要素がはみ出さないために必要 */
       width: 100%;
       max-width: 480px;
-      padding: 12px 16px 40px;
+      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    /* ハートは最後で1列幅中央に */
-    .card:last-child {
-      grid-column: 1 / -1;
-      max-width: 200px;
-      margin: 0 auto;
-      width: 100%;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.5dvh, 14px);
     }
 
     /* ===== カード ===== */
@@ -69,17 +66,17 @@
       background: #fff;
       border-radius: var(--card-radius);
       box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-      padding: 28px 16px 22px;
+      padding: clamp(8px, 2dvh, 22px) 8px clamp(6px, 1.5dvh, 16px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      justify-content: center;
+      gap: clamp(4px, 1dvh, 12px);
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: box-shadow 0.15s, transform 0.15s;
-      /* 誤タップ対策：最小タップ領域 */
-      min-height: 160px;
+      transition: box-shadow 0.15s;
+      overflow: hidden;
     }
 
     .card:active {
@@ -102,126 +99,120 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 90px;
+      height: clamp(52px, 12dvh, 90px);
+      flex-shrink: 0;
     }
 
     .shape-wrap.bouncing {
       animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
     }
 
-    /* ===== ラベル ===== */
     .label {
-      font-size: clamp(1.3rem, 5.5vw, 1.6rem);
+      font-size: clamp(0.95rem, 4.5vw, 1.5rem);
       font-weight: 700;
       letter-spacing: 0.1em;
+      line-height: 1;
     }
 
-    /* ===== 図形ごとの色 ===== */
-    /* まる */
-    .card[data-shape="maru"]         { background: #fff8e1; }
-    .card[data-shape="maru"] .label  { color: #f57f17; }
+    /* ===== カードカラー ===== */
+    .card[data-shape="maru"]    { background: #fff8e1; }
+    .card[data-shape="maru"] .label { color: #f57f17; }
 
-    /* さんかく */
-    .card[data-shape="sankaku"]         { background: #e8f5e9; }
-    .card[data-shape="sankaku"] .label  { color: #2e7d32; }
+    .card[data-shape="sankaku"]    { background: #e8f5e9; }
+    .card[data-shape="sankaku"] .label { color: #2e7d32; }
 
-    /* しかく */
-    .card[data-shape="shikaku"]         { background: #e3f2fd; }
-    .card[data-shape="shikaku"] .label  { color: #1565c0; }
+    .card[data-shape="shikaku"]    { background: #e3f2fd; }
+    .card[data-shape="shikaku"] .label { color: #1565c0; }
 
-    /* ほし */
-    .card[data-shape="hoshi"]         { background: #fce4ec; }
-    .card[data-shape="hoshi"] .label  { color: #c62828; }
+    .card[data-shape="hoshi"]    { background: #fce4ec; }
+    .card[data-shape="hoshi"] .label { color: #c62828; }
 
-    /* ハート */
-    .card[data-shape="haato"]         { background: #fce4ec; }
-    .card[data-shape="haato"] .label  { color: #ad1457; }
+    .card[data-shape="haato"]    { background: #fce4ec; }
+    .card[data-shape="haato"] .label { color: #ad1457; }
+
+    .card[data-shape="tsuki"]    { background: #ede7f6; }
+    .card[data-shape="tsuki"] .label { color: #4527a0; }
 
     /* ===== CSS図形 ===== */
 
+    /* ── 図形サイズ共通変数 ── */
+    :root { --s: clamp(44px, 10dvh, 78px); }
+
     /* まる */
     .shape-maru {
-      width: 80px;
-      height: 80px;
+      width: var(--s); height: var(--s);
       border-radius: 50%;
       background: #ffca28;
       box-shadow: 0 4px 12px rgba(255,202,40,0.5);
     }
 
-    /* さんかく */
+    /* さんかく（border trick はサイズ変数で比例スケール） */
     .shape-sankaku {
-      width: 0;
-      height: 0;
-      border-left: 44px solid transparent;
-      border-right: 44px solid transparent;
-      border-bottom: 80px solid #66bb6a;
+      width: 0; height: 0;
+      border-left:  calc(var(--s) * 0.55) solid transparent;
+      border-right: calc(var(--s) * 0.55) solid transparent;
+      border-bottom: var(--s) solid #66bb6a;
       filter: drop-shadow(0 4px 8px rgba(102,187,106,0.5));
     }
 
     /* しかく */
     .shape-shikaku {
-      width: 78px;
-      height: 78px;
+      width: var(--s); height: var(--s);
       background: #42a5f5;
-      border-radius: 8px;
+      border-radius: clamp(4px, 1vw, 8px);
       box-shadow: 0 4px 12px rgba(66,165,245,0.5);
     }
 
-    /* ほし（clip-path） */
+    /* ほし */
     .shape-hoshi {
-      width: 84px;
-      height: 84px;
+      width: var(--s); height: var(--s);
       background: #ef5350;
       clip-path: polygon(
-        50% 0%,
-        61% 35%, 98% 35%,
+        50% 0%, 61% 35%, 98% 35%,
         68% 57%, 79% 91%,
         50% 70%, 21% 91%,
-        32% 57%, 2% 35%,
-        39% 35%
+        32% 57%, 2% 35%, 39% 35%
       );
       filter: drop-shadow(0 4px 8px rgba(239,83,80,0.5));
     }
 
-    /* ハート（CSS trick） */
+    /* ハート */
     .shape-haato {
-      position: relative;
-      width: 80px;
-      height: 72px;
-    }
-
-    .shape-haato::before,
-    .shape-haato::after {
-      content: "";
-      position: absolute;
-      width: 44px;
-      height: 68px;
+      width: var(--s); height: calc(var(--s) * 0.93);
       background: #ec407a;
-      border-radius: 44px 44px 0 0;
-      box-shadow: 0 4px 12px rgba(236,64,122,0.4);
+      clip-path: path("M41 70 C41 70 4 46 4 22 C4 10 13 2 24 2 C31 2 38 6 41 12 C44 6 51 2 58 2 C69 2 78 10 78 22 C78 46 41 70 41 70 Z");
+      filter: drop-shadow(0 4px 8px rgba(236,64,122,0.45));
     }
 
-    .shape-haato::before {
-      left: 18px;
-      transform: rotate(-45deg);
-      transform-origin: 0 100%;
+    /* 三日月 */
+    .shape-tsuki {
+      width: var(--s); height: var(--s);
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: inset calc(var(--s) * -0.25) calc(var(--s) * -0.05) 0 calc(var(--s) * 0.055) #b39ddb;
+      filter: drop-shadow(0 4px 8px rgba(179,157,219,0.5));
     }
 
-    .shape-haato::after {
-      left: 18px;
-      transform: rotate(45deg);
-      transform-origin: 100% 100%;
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: clamp(0.75rem, 3.2vw, 0.95rem);
+      font-weight: 700;
+      color: #5c6bc0;
+      text-decoration: none;
+      background: #e8eaf6;
+      border-radius: 20px;
+      padding: 5px 14px;
+      margin-top: clamp(4px, 1dvh, 8px);
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* ===== 誤タップ防止オーバーレイ（タップ中は他のカードを無効化） ===== */
-    body.locked .card { pointer-events: none; }
-    body.locked .card.active-card { pointer-events: auto; }
-
-    /* ===== フッター ===== */
     footer {
-      padding: 0 0 24px;
+      flex-shrink: 0;
+      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
       color: #bcaaa4;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       letter-spacing: 0.05em;
     }
   </style>
@@ -231,95 +222,78 @@
 <header>
   <h1>🌈 かたち図鑑</h1>
   <p>たっぷして あそぼう！</p>
+  <a class="nav-link" href="iro.html">🎨 いろ図鑑へ ▶</a>
 </header>
 
-<main id="grid">
+<main>
   <!-- まる -->
   <div class="card" data-shape="maru" data-sound="sounds/maru.mp3">
-    <div class="shape-wrap">
-      <div class="shape-maru"></div>
-    </div>
+    <div class="shape-wrap"><div class="shape-maru"></div></div>
     <span class="label">まる</span>
   </div>
 
   <!-- さんかく -->
   <div class="card" data-shape="sankaku" data-sound="sounds/sankaku.mp3">
-    <div class="shape-wrap">
-      <div class="shape-sankaku"></div>
-    </div>
+    <div class="shape-wrap"><div class="shape-sankaku"></div></div>
     <span class="label">さんかく</span>
   </div>
 
   <!-- しかく -->
   <div class="card" data-shape="shikaku" data-sound="sounds/shikaku.mp3">
-    <div class="shape-wrap">
-      <div class="shape-shikaku"></div>
-    </div>
+    <div class="shape-wrap"><div class="shape-shikaku"></div></div>
     <span class="label">しかく</span>
   </div>
 
   <!-- ほし -->
   <div class="card" data-shape="hoshi" data-sound="sounds/hoshi.mp3">
-    <div class="shape-wrap">
-      <div class="shape-hoshi"></div>
-    </div>
+    <div class="shape-wrap"><div class="shape-hoshi"></div></div>
     <span class="label">ほし</span>
   </div>
 
   <!-- ハート -->
   <div class="card" data-shape="haato" data-sound="sounds/haato.mp3">
-    <div class="shape-wrap">
-      <div class="shape-haato"></div>
-    </div>
+    <div class="shape-wrap"><div class="shape-haato"></div></div>
     <span class="label">ハート</span>
+  </div>
+
+  <!-- 三日月 -->
+  <div class="card" data-shape="tsuki" data-sound="sounds/tsuki.mp3">
+    <div class="shape-wrap"><div class="shape-tsuki"></div></div>
+    <span class="label">つき</span>
   </div>
 </main>
 
 <footer>かたち図鑑 ✦ 2さいから</footer>
 
 <script>
-  // 音声キャッシュ（読み込み済みを再利用）
   const audioCache = {};
 
   function getAudio(src) {
-    if (!audioCache[src]) {
-      audioCache[src] = new Audio(src);
-    }
+    if (!audioCache[src]) audioCache[src] = new Audio(src);
     return audioCache[src];
   }
 
-  // 誤タップ防止：アニメーション中は他カードを無効化
   let isAnimating = false;
 
   document.querySelectorAll(".card").forEach(card => {
     card.addEventListener("click", () => {
       if (isAnimating) return;
-
       isAnimating = true;
-      const wrap = card.querySelector(".shape-wrap");
-      const src  = card.dataset.sound;
 
-      // バウンス
+      const wrap = card.querySelector(".shape-wrap");
       wrap.classList.add("bouncing");
 
-      // 音声再生（前回途中なら先頭から）
-      const audio = getAudio(src);
+      const audio = getAudio(card.dataset.sound);
       audio.currentTime = 0;
-      audio.play().catch(() => {
-        // ブラウザのautoplay制限は無視（タップ起因なので通常は再生される）
-      });
+      audio.play().catch(() => {});
 
-      // アニメーション終了後にリセット
-      const BOUNCE_MS = 450;
       setTimeout(() => {
         wrap.classList.remove("bouncing");
         isAnimating = false;
-      }, BOUNCE_MS);
+      }, 450);
     });
   });
 
-  // タッチデバイスで 300ms 遅延をなくす（pointer events対応ブラウザ向け）
-  // viewport に user-scalable=no を設定済みなので追加対策のみ
   document.addEventListener("touchstart", () => {}, { passive: true });
 </script>
 
