@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>かず図鑑</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bounce-duration: 0.45s;
+      /* カードごとのアクセントカラー（数字順） */
+      --c1: #e53935; --c2: #e91e63; --c3: #9c27b0; --c4: #3f51b5; --c5: #0288d1;
+      --c6: #00897b; --c7: #43a047; --c8: #f57f17; --c9: #e64a19; --c10: #6d4c41;
+    }
+
+    html, body { height: 100dvh; overflow: hidden; }
+
+    body {
+      background: #f9fbe7;
+      font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    /* ===== ナビ ===== */
+    nav {
+      width: 100%;
+      max-width: 540px;
+      padding: clamp(5px, 1.2dvh, 10px) 14px 0;
+      flex-shrink: 0;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: clamp(0.75rem, 3vw, 0.95rem);
+      font-weight: 700;
+      color: #558b2f;
+      text-decoration: none;
+      background: #f1f8e9;
+      border-radius: 20px;
+      padding: 5px 14px 5px 10px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ===== ヘッダー ===== */
+    header {
+      flex-shrink: 0;
+      width: 100%;
+      text-align: center;
+      padding: clamp(4px, 1dvh, 12px) 14px clamp(2px, 0.6dvh, 6px);
+    }
+
+    header h1 {
+      font-size: clamp(1.1rem, 4.5vw, 1.8rem);
+      color: #558b2f;
+      letter-spacing: 0.15em;
+      text-shadow: 2px 2px 0 #dcedc8;
+    }
+
+    header p {
+      font-size: clamp(0.7rem, 2.8vw, 0.9rem);
+      color: #8d6e63;
+      margin-top: 2px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== グリッド：2列×5行 ===== */
+    main {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: 540px;
+      padding: clamp(4px, 1dvh, 10px) clamp(8px, 2.5vw, 14px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(5, 1fr);
+      gap: clamp(4px, 1dvh, 10px);
+    }
+
+    /* ===== カード ===== */
+    .card {
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+      padding: clamp(4px, 1dvh, 10px) 6px clamp(3px, 0.8dvh, 8px);
+      display: flex;
+      flex-direction: row;      /* 数字（左）＋ドット（右）横並び */
+      align-items: center;
+      gap: clamp(4px, 1.5vw, 10px);
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s;
+      overflow: hidden;
+    }
+
+    .card:active { box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
+
+    /* ===== バウンス ===== */
+    @keyframes bounce {
+      0%   { transform: scale(1) translateY(0); }
+      20%  { transform: scale(0.88,1.10) translateY(0); }
+      40%  { transform: scale(1.18,0.88) translateY(-20px); }
+      55%  { transform: scale(0.94,1.06) translateY(0); }
+      70%  { transform: scale(1.08,0.94) translateY(-8px); }
+      82%  { transform: scale(0.98,1.02) translateY(0); }
+      92%  { transform: scale(1.03,0.98) translateY(-3px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    .card.bouncing { animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards; }
+
+    /* ===== 数字 ===== */
+    .num {
+      font-size: clamp(1.6rem, 6vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1;
+      flex-shrink: 0;
+      width: clamp(32px, 9vw, 52px);
+      text-align: center;
+    }
+
+    /* ===== ドットエリア ===== */
+    .dots {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      gap: clamp(2px, 0.6vw, 5px);
+      flex: 1;
+    }
+
+    .dot {
+      width: clamp(7px, 2vw, 13px);
+      height: clamp(7px, 2vw, 13px);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ===== 数字ごとのカラー ===== */
+    .card[data-n="1"]  { background:#fff5f5; } .card[data-n="1"]  .num,.card[data-n="1"]  .dot { color:var(--c1);  background:var(--c1); }
+    .card[data-n="2"]  { background:#fce4ec; } .card[data-n="2"]  .num,.card[data-n="2"]  .dot { color:var(--c2);  background:var(--c2); }
+    .card[data-n="3"]  { background:#f3e5f5; } .card[data-n="3"]  .num,.card[data-n="3"]  .dot { color:var(--c3);  background:var(--c3); }
+    .card[data-n="4"]  { background:#e8eaf6; } .card[data-n="4"]  .num,.card[data-n="4"]  .dot { color:var(--c4);  background:var(--c4); }
+    .card[data-n="5"]  { background:#e1f5fe; } .card[data-n="5"]  .num,.card[data-n="5"]  .dot { color:var(--c5);  background:var(--c5); }
+    .card[data-n="6"]  { background:#e0f2f1; } .card[data-n="6"]  .num,.card[data-n="6"]  .dot { color:var(--c6);  background:var(--c6); }
+    .card[data-n="7"]  { background:#e8f5e9; } .card[data-n="7"]  .num,.card[data-n="7"]  .dot { color:var(--c7);  background:var(--c7); }
+    .card[data-n="8"]  { background:#fff8e1; } .card[data-n="8"]  .num,.card[data-n="8"]  .dot { color:var(--c8);  background:var(--c8); }
+    .card[data-n="9"]  { background:#fbe9e7; } .card[data-n="9"]  .num,.card[data-n="9"]  .dot { color:var(--c9);  background:var(--c9); }
+    .card[data-n="10"] { background:#efebe9; } .card[data-n="10"] .num,.card[data-n="10"] .dot { color:var(--c10); background:var(--c10); }
+
+    /* numはbackgroundではなくcolorで色付け */
+    .num { background: transparent !important; }
+
+    footer {
+      flex-shrink: 0;
+      padding: clamp(3px, 0.8dvh, 10px) 0 clamp(4px, 1dvh, 12px);
+      color: #bcaaa4;
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html">◀ かたち図鑑</a>
+</nav>
+
+<header>
+  <h1>🔢 かず図鑑</h1>
+  <p>たっぷして あそぼう！</p>
+</header>
+
+<main id="grid"></main>
+
+<footer>かず図鑑 ✦ 2さいから</footer>
+
+<script>
+  const numbers = [
+    { n:1,  sound:'sounds/ichi.mp3' },
+    { n:2,  sound:'sounds/ni.mp3'   },
+    { n:3,  sound:'sounds/san.mp3'  },
+    { n:4,  sound:'sounds/yon.mp3'  },
+    { n:5,  sound:'sounds/go.mp3'   },
+    { n:6,  sound:'sounds/roku.mp3' },
+    { n:7,  sound:'sounds/nana.mp3' },
+    { n:8,  sound:'sounds/hachi.mp3'},
+    { n:9,  sound:'sounds/kyu.mp3'  },
+    { n:10, sound:'sounds/juu.mp3'  },
+  ];
+
+  const grid = document.getElementById('grid');
+
+  numbers.forEach(({ n, sound }) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.n = n;
+    card.dataset.sound = sound;
+
+    // 数字
+    const num = document.createElement('span');
+    num.className = 'num';
+    num.textContent = n;
+
+    // ドット
+    const dots = document.createElement('div');
+    dots.className = 'dots';
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot';
+      dots.appendChild(d);
+    }
+
+    card.appendChild(num);
+    card.appendChild(dots);
+    grid.appendChild(card);
+  });
+
+  // 音声キャッシュ
+  const audioCache = {};
+  function getAudio(src) {
+    if (!audioCache[src]) audioCache[src] = new Audio(src);
+    return audioCache[src];
+  }
+
+  let isAnimating = false;
+  grid.addEventListener('click', e => {
+    const card = e.target.closest('.card');
+    if (!card || isAnimating) return;
+    isAnimating = true;
+    card.classList.add('bouncing');
+    const audio = getAudio(card.dataset.sound);
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+    setTimeout(() => {
+      card.classList.remove('bouncing');
+      isAnimating = false;
+    }, 450);
+  });
+
+  document.addEventListener('touchstart', () => {}, { passive: true });
+</script>
+
+</body>
+</html>
