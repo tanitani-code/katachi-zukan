@@ -229,9 +229,18 @@
 <script>
   const audioCache = {};
   function getAudio(src) {
-    if (!audioCache[src]) audioCache[src] = new Audio(src);
+    if (!audioCache[src]) {
+      const a = new Audio(src);
+      a.preload = 'auto';
+      audioCache[src] = a;
+    }
     return audioCache[src];
   }
+
+  // ページ読み込み時に全音声を先読み
+  document.querySelectorAll(".card").forEach(card => {
+    if (card.dataset.sound) getAudio(card.dataset.sound);
+  });
 
   let isAnimating = false;
   document.querySelectorAll(".card").forEach(card => {

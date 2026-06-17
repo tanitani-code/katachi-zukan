@@ -220,12 +220,18 @@
     grid.appendChild(card);
   });
 
-  // 音声キャッシュ
+  // 音声キャッシュ（ページ読み込み時に全音声を先読み）
   const audioCache = {};
   function getAudio(src) {
-    if (!audioCache[src]) audioCache[src] = new Audio(src);
+    if (!audioCache[src]) {
+      const a = new Audio(src);
+      a.preload = 'auto';
+      audioCache[src] = a;
+    }
     return audioCache[src];
   }
+
+  numbers.forEach(({ sound }) => getAudio(sound));
 
   let isAnimating = false;
   grid.addEventListener('click', e => {
