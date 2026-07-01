@@ -11,6 +11,7 @@
       --bg: #f1f8e9;
       --card-radius: 32px;
       --bounce-duration: 0.45s;
+      --s: clamp(44px, 10dvh, 78px);
     }
 
     html, body { height: 100dvh; overflow: hidden; }
@@ -86,12 +87,12 @@
       background: #fff;
       border-radius: var(--card-radius);
       box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-      padding: clamp(8px, 2dvh, 20px) 8px clamp(6px, 1.5dvh, 14px);
+      padding: clamp(8px, 2dvh, 22px) 8px clamp(6px, 1.5dvh, 16px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: clamp(4px, 1dvh, 10px);
+      gap: clamp(4px, 1dvh, 12px);
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -113,22 +114,22 @@
       100% { transform: scale(1) translateY(0); }
     }
 
-    .emoji-wrap {
+    .shape-wrap {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: clamp(52px, 11dvh, 84px);
+      height: clamp(52px, 12dvh, 90px);
       flex-shrink: 0;
-      line-height: 1;
     }
 
-    .emoji-wrap.bouncing {
+    .shape-wrap.bouncing {
       animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
     }
 
-    .animal-emoji {
-      font-size: clamp(2.8rem, 9dvh, 5rem);
-      display: block;
+    .shape-wrap img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
     }
 
     .label {
@@ -178,33 +179,45 @@
 </header>
 
 <main>
-  <div class="card" data-animal="inu" data-sound="sounds/animals/inu.mp3">
-    <div class="emoji-wrap"><span class="animal-emoji">🐕</span></div>
+  <div class="card" data-animal="inu"
+       data-voice="sounds/inu_voice.mp3"
+       data-se="sounds/animals/inu.mp3">
+    <div class="shape-wrap"><img src="images/animals/inu.png" alt="いぬ"></div>
     <span class="label">いぬ</span>
   </div>
 
-  <div class="card" data-animal="neko" data-sound="sounds/animals/neko.mp3">
-    <div class="emoji-wrap"><span class="animal-emoji">🐈</span></div>
+  <div class="card" data-animal="neko"
+       data-voice="sounds/neko_voice.mp3"
+       data-se="sounds/animals/neko.mp3">
+    <div class="shape-wrap"><img src="images/animals/neko.png" alt="ねこ"></div>
     <span class="label">ねこ</span>
   </div>
 
-  <div class="card" data-animal="ushi" data-sound="sounds/animals/ushi.mp3">
-    <div class="emoji-wrap"><span class="animal-emoji">🐄</span></div>
+  <div class="card" data-animal="ushi"
+       data-voice="sounds/ushi_voice.mp3"
+       data-se="sounds/animals/ushi.mp3">
+    <div class="shape-wrap"><img src="images/animals/ushi.png" alt="うし"></div>
     <span class="label">うし</span>
   </div>
 
-  <div class="card" data-animal="raion" data-sound="sounds/animals/raion.mp3">
-    <div class="emoji-wrap"><span class="animal-emoji">🦁</span></div>
+  <div class="card" data-animal="raion"
+       data-voice="sounds/raion_voice.mp3"
+       data-se="sounds/animals/raion.mp3">
+    <div class="shape-wrap"><img src="images/animals/raion.png" alt="ライオン"></div>
     <span class="label">ライオン</span>
   </div>
 
-  <div class="card" data-animal="zou" data-sound="sounds/animals/zou.mp3">
-    <div class="emoji-wrap"><span class="animal-emoji">🐘</span></div>
+  <div class="card" data-animal="zou"
+       data-voice="sounds/zou_voice.mp3"
+       data-se="sounds/animals/zou.mp3">
+    <div class="shape-wrap"><img src="images/animals/zou.png" alt="ぞう"></div>
     <span class="label">ぞう</span>
   </div>
 
-  <div class="card" data-animal="buta" data-sound="sounds/animals/buta.mp3">
-    <div class="emoji-wrap"><span class="animal-emoji">🐷</span></div>
+  <div class="card" data-animal="buta"
+       data-voice="sounds/buta_voice.mp3"
+       data-se="sounds/animals/buta.mp3">
+    <div class="shape-wrap"><img src="images/animals/buta.png" alt="ぶた"></div>
     <span class="label">ぶた</span>
   </div>
 </main>
@@ -224,23 +237,37 @@
 
   // ページ読み込み時に全音声を先読み
   document.querySelectorAll('.card').forEach(card => {
-    if (card.dataset.sound) getAudio(card.dataset.sound);
+    if (card.dataset.voice) getAudio(card.dataset.voice);
+    if (card.dataset.se)    getAudio(card.dataset.se);
   });
 
   let isAnimating = false;
+
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', () => {
       if (isAnimating) return;
       isAnimating = true;
-      const wrap = card.querySelector('.emoji-wrap');
+
+      const wrap  = card.querySelector('.shape-wrap');
+      const voice = getAudio(card.dataset.voice);
+      const se    = getAudio(card.dataset.se);
+
+      // バウンスアニメーション
       wrap.classList.add('bouncing');
-      const audio = getAudio(card.dataset.sound);
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-      setTimeout(() => {
-        wrap.classList.remove('bouncing');
-        isAnimating = false;
-      }, 450);
+      setTimeout(() => wrap.classList.remove('bouncing'), 450);
+
+      // ①ずんだもん読み上げ → 終わったら②鳴き声SE
+      voice.currentTime = 0;
+      voice.play().catch(() => {});
+
+      voice.onended = () => {
+        se.currentTime = 0;
+        se.play().catch(() => {});
+        se.onended = () => { isAnimating = false; };
+      };
+
+      // SEが短い・読み上げより先に終わる場合のフォールバック
+      setTimeout(() => { isAnimating = false; }, 4000);
     });
   });
 
