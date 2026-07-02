@@ -256,10 +256,10 @@
   const overlayLbl  = document.getElementById('overlay-label');
 
   let isOpen = false;
-  let closeTimer = null;
+  let session = 0;  // タイマー無効化用：closeのたびにインクリメント
 
   function closeOverlay() {
-    clearTimeout(closeTimer);
+    session++;  // 進行中のタイマーをすべて無効化
     overlay.classList.remove('active');
     isOpen = false;
   }
@@ -267,6 +267,7 @@
   function openOverlay(card) {
     if (isOpen) return;
     isOpen = true;
+    const mySession = ++session;
 
     const img   = card.querySelector('.card-img');
     const label = card.dataset.label;
@@ -288,11 +289,12 @@
     audio.play().catch(() => {});
 
     audio.onended = () => {
-      closeTimer = setTimeout(closeOverlay, 2000);
+      if (session !== mySession) return;
+      setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
     };
 
     // フォールバック（音声が鳴らない場合）
-    closeTimer = setTimeout(closeOverlay, 8000);
+    setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
   }
 
   document.querySelectorAll('.card').forEach(card => {
