@@ -9,9 +9,7 @@
 
     :root {
       --bg: #fff8f0;
-      --card-radius: 32px;
-      --bounce-duration: 0.45s;
-      --s: clamp(44px, 10dvh, 78px);
+      --card-radius: 24px;
     }
 
     html, body { height: 100dvh; overflow: hidden; }
@@ -25,7 +23,6 @@
       touch-action: manipulation;
     }
 
-    /* ===== ナビ ===== */
     nav {
       width: 100%;
       max-width: 480px;
@@ -47,7 +44,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ===== ヘッダー ===== */
     header {
       flex-shrink: 0;
       width: 100%;
@@ -69,94 +65,103 @@
       letter-spacing: 0.1em;
     }
 
-    /* ===== グリッド：2列×3行（5枚＋空白1） ===== */
     main {
       flex: 1;
       min-height: 0;
       width: 100%;
       max-width: 480px;
-      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
+      padding: clamp(6px, 1.5dvh, 10px) clamp(8px, 3vw, 14px);
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: repeat(3, 1fr);
-      gap: clamp(6px, 1.5dvh, 14px);
+      gap: clamp(6px, 1.5dvh, 12px);
     }
 
-    /* ===== カード ===== */
     .card {
-      background: #fff;
+      position: relative;
       border-radius: var(--card-radius);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-      padding: clamp(8px, 2dvh, 22px) 8px clamp(6px, 1.5dvh, 16px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(4px, 1dvh, 12px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+      overflow: hidden;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: box-shadow 0.15s;
-      overflow: hidden;
+      transition: box-shadow 0.15s, transform 0.1s;
     }
 
-    .card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
+    .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
 
-    /* ===== バウンスアニメーション ===== */
-    @keyframes bounce {
-      0%   { transform: scale(1) translateY(0); }
-      20%  { transform: scale(0.88, 1.10) translateY(0); }
-      40%  { transform: scale(1.18, 0.88) translateY(-28px); }
-      55%  { transform: scale(0.94, 1.06) translateY(0); }
-      70%  { transform: scale(1.08, 0.94) translateY(-12px); }
-      82%  { transform: scale(0.98, 1.02) translateY(0); }
-      92%  { transform: scale(1.03, 0.98) translateY(-5px); }
-      100% { transform: scale(1) translateY(0); }
-    }
-
-    .shape-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: clamp(52px, 12dvh, 90px);
-      flex-shrink: 0;
-    }
-
-    .shape-wrap.bouncing {
-      animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
-    }
-
-    .shape-wrap img {
+    .card-img {
+      width: 100%;
       height: 100%;
-      width: auto;
-      object-fit: contain;
+      object-fit: cover;
+      display: block;
     }
 
     .label {
-      font-size: clamp(0.95rem, 4.5vw, 1.5rem);
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       line-height: 1;
     }
 
-    /* ===== カードカラー ===== */
     .card[data-fruit="ringo"]  { background: #fff5f5; }
-    .card[data-fruit="ringo"] .label  { color: #c62828; }
+    .card[data-fruit="ringo"] .label  { background: rgba(255,245,245,0.88); color: #c62828; }
 
     .card[data-fruit="banana"] { background: #fffde7; }
-    .card[data-fruit="banana"] .label { color: #f57f17; }
+    .card[data-fruit="banana"] .label { background: rgba(255,253,231,0.88); color: #f57f17; }
 
     .card[data-fruit="ichigo"] { background: #fce4ec; }
-    .card[data-fruit="ichigo"] .label { color: #ad1457; }
+    .card[data-fruit="ichigo"] .label { background: rgba(252,228,236,0.88); color: #ad1457; }
 
     .card[data-fruit="budo"]   { background: #f3e5f5; }
-    .card[data-fruit="budo"] .label   { color: #6a1b9a; }
+    .card[data-fruit="budo"] .label   { background: rgba(243,229,245,0.88); color: #6a1b9a; }
 
     .card[data-fruit="suika"]  { background: #e8f5e9; }
-    .card[data-fruit="suika"] .label  { color: #2e7d32; }
+    .card[data-fruit="suika"] .label  { background: rgba(232,245,233,0.88); color: #2e7d32; }
 
     .card[data-fruit="mikan"]  { background: #fff3e0; }
-    .card[data-fruit="mikan"] .label  { color: #e65100; }
+    .card[data-fruit="mikan"] .label  { background: rgba(255,243,224,0.88); color: #e65100; }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-img {
+      width: min(80vw, 80dvh);
+      height: min(80vw, 80dvh);
+      object-fit: cover;
+      border-radius: 28px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
 
     footer {
       flex-shrink: 0;
@@ -179,72 +184,86 @@
 </header>
 
 <main>
-  <div class="card" data-fruit="ringo" data-sound="sounds/ringo.mp3">
-    <div class="shape-wrap"><img src="images/fruits/ringo.png" alt="りんご"></div>
+  <div class="card" data-fruit="ringo"  data-sound="sounds/ringo.mp3"  data-label="りんご">
+    <img class="card-img" src="images/fruits/ringo.png" alt="りんご">
     <span class="label">りんご</span>
   </div>
-
-  <div class="card" data-fruit="banana" data-sound="sounds/banana.mp3">
-    <div class="shape-wrap"><img src="images/fruits/banana.png" alt="バナナ"></div>
+  <div class="card" data-fruit="banana" data-sound="sounds/banana.mp3" data-label="バナナ">
+    <img class="card-img" src="images/fruits/banana.png" alt="バナナ">
     <span class="label">バナナ</span>
   </div>
-
-  <div class="card" data-fruit="ichigo" data-sound="sounds/ichigo.mp3">
-    <div class="shape-wrap"><img src="images/fruits/ichigo_transparent.png" alt="いちご"></div>
+  <div class="card" data-fruit="ichigo" data-sound="sounds/ichigo.mp3" data-label="いちご">
+    <img class="card-img" src="images/fruits/ichigo_transparent.png" alt="いちご">
     <span class="label">いちご</span>
   </div>
-
-  <div class="card" data-fruit="budo" data-sound="sounds/budo.mp3">
-    <div class="shape-wrap"><img src="images/fruits/budo.png" alt="ぶどう"></div>
+  <div class="card" data-fruit="budo"   data-sound="sounds/budo.mp3"   data-label="ぶどう">
+    <img class="card-img" src="images/fruits/budo.png" alt="ぶどう">
     <span class="label">ぶどう</span>
   </div>
-
-  <div class="card" data-fruit="suika" data-sound="sounds/suika.mp3">
-    <div class="shape-wrap"><img src="images/fruits/suika.png" alt="すいか"></div>
+  <div class="card" data-fruit="suika"  data-sound="sounds/suika.mp3"  data-label="すいか">
+    <img class="card-img" src="images/fruits/suika.png" alt="すいか">
     <span class="label">すいか</span>
   </div>
-
-  <div class="card" data-fruit="mikan" data-sound="sounds/mikan.mp3">
-    <div class="shape-wrap"><img src="images/fruits/mikan.png" alt="みかん"></div>
+  <div class="card" data-fruit="mikan"  data-sound="sounds/mikan.mp3"  data-label="みかん">
+    <img class="card-img" src="images/fruits/mikan.png" alt="みかん">
     <span class="label">みかん</span>
   </div>
 </main>
 
 <footer>くだもの図鑑 ✦ 2さいから</footer>
 
+<div id="overlay">
+  <img id="overlay-img" src="" alt="">
+  <span id="overlay-label"></span>
+</div>
+
 <script>
   const audioCache = {};
   function getAudio(src) {
-    if (!audioCache[src]) {
-      const a = new Audio(src);
-      a.preload = 'auto';
-      audioCache[src] = a;
-    }
+    if (!audioCache[src]) { const a = new Audio(src); a.preload = 'auto'; audioCache[src] = a; }
     return audioCache[src];
   }
+  document.querySelectorAll('.card').forEach(card => { if (card.dataset.sound) getAudio(card.dataset.sound); });
 
-  // ページ読み込み時に全音声を先読み
+  const overlay    = document.getElementById('overlay');
+  const overlayImg = document.getElementById('overlay-img');
+  const overlayLbl = document.getElementById('overlay-label');
+  let isOpen = false, session = 0;
+
+  function closeOverlay() {
+    session++;
+    overlay.classList.remove('active');
+    isOpen = false;
+  }
+
+  function openOverlay(card) {
+    if (isOpen) return;
+    isOpen = true;
+    const mySession = ++session;
+
+    const img = card.querySelector('.card-img');
+    overlayImg.style.animation = 'none';
+    overlayImg.offsetHeight;
+    overlayImg.style.animation = '';
+    overlayImg.src = img.src;
+    overlayImg.alt = img.alt;
+    overlayLbl.textContent = card.dataset.label;
+    overlay.classList.add('active');
+
+    const audio = getAudio(card.dataset.sound);
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+    audio.onended = () => {
+      if (session !== mySession) return;
+      setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
+    };
+    setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
+  }
+
   document.querySelectorAll('.card').forEach(card => {
-    if (card.dataset.sound) getAudio(card.dataset.sound);
+    card.addEventListener('click', () => openOverlay(card));
   });
-
-  let isAnimating = false;
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (isAnimating) return;
-      isAnimating = true;
-      const wrap = card.querySelector('.shape-wrap');
-      wrap.classList.add('bouncing');
-      const audio = getAudio(card.dataset.sound);
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-      setTimeout(() => {
-        wrap.classList.remove('bouncing');
-        isAnimating = false;
-      }, 450);
-    });
-  });
-
+  overlay.addEventListener('click', closeOverlay);
   document.addEventListener('touchstart', () => {}, { passive: true });
 </script>
 

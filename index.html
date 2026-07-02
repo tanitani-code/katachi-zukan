@@ -9,14 +9,11 @@
 
     :root {
       --bg: #fffde7;
-      --card-radius: 32px;
-      --bounce-duration: 0.45s;
+      --card-radius: 24px;
+      --s: clamp(44px, 10dvh, 78px);
     }
 
-    html, body {
-      height: 100dvh;
-      overflow: hidden;
-    }
+    html, body { height: 100dvh; overflow: hidden; }
 
     body {
       background: var(--bg);
@@ -48,151 +45,6 @@
       letter-spacing: 0.1em;
     }
 
-    /* ===== グリッド：2列×3行 均等配置 ===== */
-    main {
-      flex: 1;
-      min-height: 0;          /* flex子要素がはみ出さないために必要 */
-      width: 100%;
-      max-width: 480px;
-      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: repeat(3, 1fr);
-      gap: clamp(6px, 1.5dvh, 14px);
-    }
-
-    /* ===== カード ===== */
-    .card {
-      background: #fff;
-      border-radius: var(--card-radius);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-      padding: clamp(8px, 2dvh, 22px) 8px clamp(6px, 1.5dvh, 16px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(4px, 1dvh, 12px);
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      transition: box-shadow 0.15s;
-      overflow: hidden;
-    }
-
-    .card:active {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-    }
-
-    /* ===== バウンスアニメーション ===== */
-    @keyframes bounce {
-      0%   { transform: scale(1) translateY(0); }
-      20%  { transform: scale(0.88, 1.10) translateY(0); }
-      40%  { transform: scale(1.18, 0.88) translateY(-28px); }
-      55%  { transform: scale(0.94, 1.06) translateY(0); }
-      70%  { transform: scale(1.08, 0.94) translateY(-12px); }
-      82%  { transform: scale(0.98, 1.02) translateY(0); }
-      92%  { transform: scale(1.03, 0.98) translateY(-5px); }
-      100% { transform: scale(1) translateY(0); }
-    }
-
-    .shape-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: clamp(52px, 12dvh, 90px);
-      flex-shrink: 0;
-    }
-
-    .shape-wrap.bouncing {
-      animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
-    }
-
-    .label {
-      font-size: clamp(0.95rem, 4.5vw, 1.5rem);
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      line-height: 1;
-    }
-
-    /* ===== カードカラー ===== */
-    .card[data-shape="maru"]    { background: #fff8e1; }
-    .card[data-shape="maru"] .label { color: #f57f17; }
-
-    .card[data-shape="sankaku"]    { background: #e8f5e9; }
-    .card[data-shape="sankaku"] .label { color: #2e7d32; }
-
-    .card[data-shape="shikaku"]    { background: #e3f2fd; }
-    .card[data-shape="shikaku"] .label { color: #1565c0; }
-
-    .card[data-shape="hoshi"]    { background: #fce4ec; }
-    .card[data-shape="hoshi"] .label { color: #c62828; }
-
-    .card[data-shape="haato"]    { background: #fce4ec; }
-    .card[data-shape="haato"] .label { color: #ad1457; }
-
-    .card[data-shape="tsuki"]    { background: #ede7f6; }
-    .card[data-shape="tsuki"] .label { color: #4527a0; }
-
-    /* ===== CSS図形 ===== */
-
-    /* ── 図形サイズ共通変数 ── */
-    :root { --s: clamp(44px, 10dvh, 78px); }
-
-    /* まる */
-    .shape-maru {
-      width: var(--s); height: var(--s);
-      border-radius: 50%;
-      background: #ffca28;
-      box-shadow: 0 4px 12px rgba(255,202,40,0.5);
-    }
-
-    /* さんかく（border trick はサイズ変数で比例スケール） */
-    .shape-sankaku {
-      width: 0; height: 0;
-      border-left:  calc(var(--s) * 0.55) solid transparent;
-      border-right: calc(var(--s) * 0.55) solid transparent;
-      border-bottom: var(--s) solid #66bb6a;
-      filter: drop-shadow(0 4px 8px rgba(102,187,106,0.5));
-    }
-
-    /* しかく */
-    .shape-shikaku {
-      width: var(--s); height: var(--s);
-      background: #42a5f5;
-      border-radius: clamp(4px, 1vw, 8px);
-      box-shadow: 0 4px 12px rgba(66,165,245,0.5);
-    }
-
-    /* ほし */
-    .shape-hoshi {
-      width: var(--s); height: var(--s);
-      background: #ef5350;
-      clip-path: polygon(
-        50% 0%, 61% 35%, 98% 35%,
-        68% 57%, 79% 91%,
-        50% 70%, 21% 91%,
-        32% 57%, 2% 35%, 39% 35%
-      );
-      filter: drop-shadow(0 4px 8px rgba(239,83,80,0.5));
-    }
-
-    /* ハート */
-    .shape-haato {
-      width: var(--s); height: calc(var(--s) * 0.93);
-      background: #ec407a;
-      clip-path: path("M41 70 C41 70 4 46 4 22 C4 10 13 2 24 2 C31 2 38 6 41 12 C44 6 51 2 58 2 C69 2 78 10 78 22 C78 46 41 70 41 70 Z");
-      filter: drop-shadow(0 4px 8px rgba(236,64,122,0.45));
-    }
-
-    /* 三日月 */
-    .shape-tsuki {
-      width: var(--s); height: var(--s);
-      border-radius: 50%;
-      background: transparent;
-      box-shadow: inset calc(var(--s) * -0.25) calc(var(--s) * -0.05) 0 calc(var(--s) * 0.055) #b39ddb;
-      filter: drop-shadow(0 4px 8px rgba(179,157,219,0.5));
-    }
-
     .nav-link {
       display: inline-flex;
       align-items: center;
@@ -206,6 +58,164 @@
       padding: 5px 14px;
       margin-top: clamp(4px, 1dvh, 8px);
       -webkit-tap-highlight-color: transparent;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.5dvh, 14px);
+    }
+
+    /* ===== カード ===== */
+    .card {
+      position: relative;
+      border-radius: var(--card-radius);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s, transform 0.1s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
+
+    .shape-wrap {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+    }
+
+    /* ===== カードカラー ===== */
+    .card[data-shape="maru"]    { background: #fff8e1; }
+    .card[data-shape="maru"] .label    { background: rgba(255,248,225,0.88); color: #f57f17; }
+
+    .card[data-shape="sankaku"] { background: #e8f5e9; }
+    .card[data-shape="sankaku"] .label { background: rgba(232,245,233,0.88); color: #2e7d32; }
+
+    .card[data-shape="shikaku"] { background: #e3f2fd; }
+    .card[data-shape="shikaku"] .label { background: rgba(227,242,253,0.88); color: #1565c0; }
+
+    .card[data-shape="hoshi"]   { background: #fce4ec; }
+    .card[data-shape="hoshi"] .label   { background: rgba(252,228,236,0.88); color: #c62828; }
+
+    .card[data-shape="haato"]   { background: #fce4ec; }
+    .card[data-shape="haato"] .label   { background: rgba(252,228,236,0.88); color: #ad1457; }
+
+    .card[data-shape="tsuki"]   { background: #ede7f6; }
+    .card[data-shape="tsuki"] .label   { background: rgba(237,231,246,0.88); color: #4527a0; }
+
+    /* ===== CSS図形 ===== */
+    .shape-maru {
+      width: var(--s); height: var(--s);
+      border-radius: 50%;
+      background: #ffca28;
+      box-shadow: 0 4px 12px rgba(255,202,40,0.5);
+    }
+
+    .shape-sankaku {
+      width: 0; height: 0;
+      border-left:  calc(var(--s) * 0.55) solid transparent;
+      border-right: calc(var(--s) * 0.55) solid transparent;
+      border-bottom: var(--s) solid #66bb6a;
+      filter: drop-shadow(0 4px 8px rgba(102,187,106,0.5));
+    }
+
+    .shape-shikaku {
+      width: var(--s); height: var(--s);
+      background: #42a5f5;
+      border-radius: clamp(4px, 1vw, 8px);
+      box-shadow: 0 4px 12px rgba(66,165,245,0.5);
+    }
+
+    .shape-hoshi {
+      width: var(--s); height: var(--s);
+      background: #ef5350;
+      clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+      filter: drop-shadow(0 4px 8px rgba(239,83,80,0.5));
+    }
+
+    .shape-haato {
+      width: var(--s); height: calc(var(--s) * 0.93);
+      background: #ec407a;
+      clip-path: path("M41 70 C41 70 4 46 4 22 C4 10 13 2 24 2 C31 2 38 6 41 12 C44 6 51 2 58 2 C69 2 78 10 78 22 C78 46 41 70 41 70 Z");
+      filter: drop-shadow(0 4px 8px rgba(236,64,122,0.45));
+    }
+
+    .shape-tsuki {
+      width: var(--s); height: var(--s);
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: inset calc(var(--s)*-0.25) calc(var(--s)*-0.05) 0 calc(var(--s)*0.055) #b39ddb;
+      filter: drop-shadow(0 4px 8px rgba(179,157,219,0.5));
+    }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-visual {
+      width: min(80vw, 80dvh);
+      height: min(80vw, 80dvh);
+      border-radius: 28px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-visual .shape-wrap {
+      transform: scale(2.8);
+      flex: none;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
 
     footer {
@@ -230,38 +240,27 @@
 </header>
 
 <main>
-  <!-- まる -->
-  <div class="card" data-shape="maru" data-sound="sounds/maru.mp3">
+  <div class="card" data-shape="maru"    data-sound="sounds/maru.mp3"    data-label="まる">
     <div class="shape-wrap"><div class="shape-maru"></div></div>
     <span class="label">まる</span>
   </div>
-
-  <!-- さんかく -->
-  <div class="card" data-shape="sankaku" data-sound="sounds/sankaku.mp3">
+  <div class="card" data-shape="sankaku" data-sound="sounds/sankaku.mp3" data-label="さんかく">
     <div class="shape-wrap"><div class="shape-sankaku"></div></div>
     <span class="label">さんかく</span>
   </div>
-
-  <!-- しかく -->
-  <div class="card" data-shape="shikaku" data-sound="sounds/shikaku.mp3">
+  <div class="card" data-shape="shikaku" data-sound="sounds/shikaku.mp3" data-label="しかく">
     <div class="shape-wrap"><div class="shape-shikaku"></div></div>
     <span class="label">しかく</span>
   </div>
-
-  <!-- ほし -->
-  <div class="card" data-shape="hoshi" data-sound="sounds/hoshi.mp3">
+  <div class="card" data-shape="hoshi"   data-sound="sounds/hoshi.mp3"   data-label="ほし">
     <div class="shape-wrap"><div class="shape-hoshi"></div></div>
     <span class="label">ほし</span>
   </div>
-
-  <!-- ハート -->
-  <div class="card" data-shape="haato" data-sound="sounds/haato.mp3">
+  <div class="card" data-shape="haato"   data-sound="sounds/haato.mp3"   data-label="ハート">
     <div class="shape-wrap"><div class="shape-haato"></div></div>
     <span class="label">ハート</span>
   </div>
-
-  <!-- 三日月 -->
-  <div class="card" data-shape="tsuki" data-sound="sounds/tsuki.mp3">
+  <div class="card" data-shape="tsuki"   data-sound="sounds/tsuki.mp3"   data-label="つき">
     <div class="shape-wrap"><div class="shape-tsuki"></div></div>
     <span class="label">つき</span>
   </div>
@@ -269,45 +268,63 @@
 
 <footer>かたち図鑑 ✦ 2さいから</footer>
 
+<div id="overlay">
+  <div id="overlay-visual"></div>
+  <span id="overlay-label"></span>
+</div>
+
 <script>
   const audioCache = {};
-
   function getAudio(src) {
-    if (!audioCache[src]) {
-      const a = new Audio(src);
-      a.preload = 'auto';
-      audioCache[src] = a;
-    }
+    if (!audioCache[src]) { const a = new Audio(src); a.preload = 'auto'; audioCache[src] = a; }
     return audioCache[src];
   }
+  document.querySelectorAll('.card').forEach(card => { if (card.dataset.sound) getAudio(card.dataset.sound); });
 
-  // ページ読み込み時に全音声を先読み
-  document.querySelectorAll(".card").forEach(card => {
-    if (card.dataset.sound) getAudio(card.dataset.sound);
+  const overlay = document.getElementById('overlay');
+  const overlayVisual = document.getElementById('overlay-visual');
+  const overlayLbl = document.getElementById('overlay-label');
+  let isOpen = false, session = 0;
+
+  function closeOverlay() {
+    session++;
+    overlay.classList.remove('active');
+    isOpen = false;
+  }
+
+  function openOverlay(card) {
+    if (isOpen) return;
+    isOpen = true;
+    const mySession = ++session;
+
+    // shape-wrap をクローンして拡大
+    const clone = card.querySelector('.shape-wrap').cloneNode(true);
+    clone.classList.remove('bouncing');
+    overlayVisual.style.background = getComputedStyle(card).backgroundColor;
+    overlayVisual.innerHTML = '';
+    overlayVisual.appendChild(clone);
+
+    overlayLbl.textContent = card.dataset.label;
+    overlayVisual.style.animation = 'none';
+    overlayVisual.offsetHeight;
+    overlayVisual.style.animation = '';
+    overlay.classList.add('active');
+
+    const audio = getAudio(card.dataset.sound);
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+    audio.onended = () => {
+      if (session !== mySession) return;
+      setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
+    };
+    setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
+  }
+
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => openOverlay(card));
   });
-
-  let isAnimating = false;
-
-  document.querySelectorAll(".card").forEach(card => {
-    card.addEventListener("click", () => {
-      if (isAnimating) return;
-      isAnimating = true;
-
-      const wrap = card.querySelector(".shape-wrap");
-      wrap.classList.add("bouncing");
-
-      const audio = getAudio(card.dataset.sound);
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-
-      setTimeout(() => {
-        wrap.classList.remove("bouncing");
-        isAnimating = false;
-      }, 450);
-    });
-  });
-
-  document.addEventListener("touchstart", () => {}, { passive: true });
+  overlay.addEventListener('click', closeOverlay);
+  document.addEventListener('touchstart', () => {}, { passive: true });
 </script>
 
 </body>

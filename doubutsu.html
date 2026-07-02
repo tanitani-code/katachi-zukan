@@ -9,9 +9,7 @@
 
     :root {
       --bg: #f1f8e9;
-      --card-radius: 32px;
-      --bounce-duration: 0.45s;
-      --s: clamp(44px, 10dvh, 78px);
+      --card-radius: 24px;
     }
 
     html, body { height: 100dvh; overflow: hidden; }
@@ -25,7 +23,6 @@
       touch-action: manipulation;
     }
 
-    /* ===== ナビ ===== */
     nav {
       width: 100%;
       max-width: 480px;
@@ -47,7 +44,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ===== ヘッダー ===== */
     header {
       flex-shrink: 0;
       width: 100%;
@@ -69,94 +65,103 @@
       letter-spacing: 0.1em;
     }
 
-    /* ===== グリッド：2列×3行 ===== */
     main {
       flex: 1;
       min-height: 0;
       width: 100%;
       max-width: 480px;
-      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
+      padding: clamp(6px, 1.5dvh, 10px) clamp(8px, 3vw, 14px);
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: repeat(3, 1fr);
-      gap: clamp(6px, 1.5dvh, 14px);
+      gap: clamp(6px, 1.5dvh, 12px);
     }
 
-    /* ===== カード ===== */
     .card {
-      background: #fff;
+      position: relative;
       border-radius: var(--card-radius);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-      padding: clamp(8px, 2dvh, 22px) 8px clamp(6px, 1.5dvh, 16px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(4px, 1dvh, 12px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+      overflow: hidden;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: box-shadow 0.15s;
-      overflow: hidden;
+      transition: box-shadow 0.15s, transform 0.1s;
     }
 
-    .card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
+    .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
 
-    /* ===== バウンスアニメーション ===== */
-    @keyframes bounce {
-      0%   { transform: scale(1) translateY(0); }
-      20%  { transform: scale(0.88, 1.10) translateY(0); }
-      40%  { transform: scale(1.18, 0.88) translateY(-24px); }
-      55%  { transform: scale(0.94, 1.06) translateY(0); }
-      70%  { transform: scale(1.08, 0.94) translateY(-10px); }
-      82%  { transform: scale(0.98, 1.02) translateY(0); }
-      92%  { transform: scale(1.03, 0.98) translateY(-4px); }
-      100% { transform: scale(1) translateY(0); }
-    }
-
-    .shape-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: clamp(52px, 12dvh, 90px);
-      flex-shrink: 0;
-    }
-
-    .shape-wrap.bouncing {
-      animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
-    }
-
-    .shape-wrap img {
+    .card-img {
+      width: 100%;
       height: 100%;
-      width: auto;
-      object-fit: contain;
+      object-fit: cover;
+      display: block;
     }
 
     .label {
-      font-size: clamp(0.95rem, 4.5vw, 1.5rem);
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       line-height: 1;
     }
 
-    /* ===== カードカラー ===== */
     .card[data-animal="inu"]   { background: #fff8e1; }
-    .card[data-animal="inu"] .label   { color: #e65100; }
+    .card[data-animal="inu"] .label   { background: rgba(255,248,225,0.88); color: #e65100; }
 
     .card[data-animal="neko"]  { background: #fce4ec; }
-    .card[data-animal="neko"] .label  { color: #ad1457; }
+    .card[data-animal="neko"] .label  { background: rgba(252,228,236,0.88); color: #ad1457; }
 
     .card[data-animal="ushi"]  { background: #f3e5f5; }
-    .card[data-animal="ushi"] .label  { color: #6a1b9a; }
+    .card[data-animal="ushi"] .label  { background: rgba(243,229,245,0.88); color: #6a1b9a; }
 
     .card[data-animal="raion"] { background: #fff3e0; }
-    .card[data-animal="raion"] .label { color: #bf360c; }
+    .card[data-animal="raion"] .label { background: rgba(255,243,224,0.88); color: #bf360c; }
 
     .card[data-animal="zou"]   { background: #ede7f6; }
-    .card[data-animal="zou"] .label   { color: #4527a0; }
+    .card[data-animal="zou"] .label   { background: rgba(237,231,246,0.88); color: #4527a0; }
 
     .card[data-animal="buta"]  { background: #fce4ec; }
-    .card[data-animal="buta"] .label  { color: #c2185b; }
+    .card[data-animal="buta"] .label  { background: rgba(252,228,236,0.88); color: #c2185b; }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-img {
+      width: min(80vw, 80dvh);
+      height: min(80vw, 80dvh);
+      object-fit: cover;
+      border-radius: 28px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
 
     footer {
       flex-shrink: 0;
@@ -180,97 +185,107 @@
 
 <main>
   <div class="card" data-animal="inu"
-       data-voice="sounds/inu_voice.mp3"
-       data-se="sounds/animals/inu.mp3">
-    <div class="shape-wrap"><img src="images/animals/inu.png" alt="いぬ"></div>
+       data-voice="sounds/inu_voice.mp3" data-se="sounds/animals/inu.mp3" data-label="いぬ">
+    <img class="card-img" src="images/animals/inu.png" alt="いぬ">
     <span class="label">いぬ</span>
   </div>
-
   <div class="card" data-animal="neko"
-       data-voice="sounds/neko_voice.mp3"
-       data-se="sounds/animals/neko.mp3">
-    <div class="shape-wrap"><img src="images/animals/neko.png" alt="ねこ"></div>
+       data-voice="sounds/neko_voice.mp3" data-se="sounds/animals/neko.mp3" data-label="ねこ">
+    <img class="card-img" src="images/animals/neko.png" alt="ねこ">
     <span class="label">ねこ</span>
   </div>
-
   <div class="card" data-animal="ushi"
-       data-voice="sounds/ushi_voice.mp3"
-       data-se="sounds/animals/ushi.mp3">
-    <div class="shape-wrap"><img src="images/animals/ushi.png" alt="うし"></div>
+       data-voice="sounds/ushi_voice.mp3" data-se="sounds/animals/ushi.mp3" data-label="うし">
+    <img class="card-img" src="images/animals/ushi.png" alt="うし">
     <span class="label">うし</span>
   </div>
-
   <div class="card" data-animal="raion"
-       data-voice="sounds/raion_voice.mp3"
-       data-se="sounds/animals/raion.mp3">
-    <div class="shape-wrap"><img src="images/animals/raion.png" alt="ライオン"></div>
+       data-voice="sounds/raion_voice.mp3" data-se="sounds/animals/raion.mp3" data-label="ライオン">
+    <img class="card-img" src="images/animals/raion.png" alt="ライオン">
     <span class="label">ライオン</span>
   </div>
-
   <div class="card" data-animal="zou"
-       data-voice="sounds/zou_voice.mp3"
-       data-se="sounds/animals/zou.mp3">
-    <div class="shape-wrap"><img src="images/animals/zou.png" alt="ぞう"></div>
+       data-voice="sounds/zou_voice.mp3" data-se="sounds/animals/zou.mp3" data-label="ぞう">
+    <img class="card-img" src="images/animals/zou.png" alt="ぞう">
     <span class="label">ぞう</span>
   </div>
-
   <div class="card" data-animal="buta"
-       data-voice="sounds/buta_voice.mp3"
-       data-se="sounds/animals/buta.mp3">
-    <div class="shape-wrap"><img src="images/animals/buta.png" alt="ぶた"></div>
+       data-voice="sounds/buta_voice.mp3" data-se="sounds/animals/buta.mp3" data-label="ぶた">
+    <img class="card-img" src="images/animals/buta.png" alt="ぶた">
     <span class="label">ぶた</span>
   </div>
 </main>
 
 <footer>どうぶつ図鑑 ✦ 2さいから</footer>
 
+<div id="overlay">
+  <img id="overlay-img" src="" alt="">
+  <span id="overlay-label"></span>
+</div>
+
 <script>
   const audioCache = {};
   function getAudio(src) {
-    if (!audioCache[src]) {
-      const a = new Audio(src);
-      a.preload = 'auto';
-      audioCache[src] = a;
-    }
+    if (!audioCache[src]) { const a = new Audio(src); a.preload = 'auto'; audioCache[src] = a; }
     return audioCache[src];
   }
-
-  // ページ読み込み時に全音声を先読み
   document.querySelectorAll('.card').forEach(card => {
     if (card.dataset.voice) getAudio(card.dataset.voice);
     if (card.dataset.se)    getAudio(card.dataset.se);
   });
 
-  let isAnimating = false;
+  const overlay    = document.getElementById('overlay');
+  const overlayImg = document.getElementById('overlay-img');
+  const overlayLbl = document.getElementById('overlay-label');
+  let isOpen = false, session = 0;
+
+  function closeOverlay() {
+    session++;
+    overlay.classList.remove('active');
+    isOpen = false;
+  }
+
+  function openOverlay(card) {
+    if (isOpen) return;
+    isOpen = true;
+    const mySession = ++session;
+
+    const img = card.querySelector('.card-img');
+    overlayImg.style.animation = 'none';
+    overlayImg.offsetHeight;
+    overlayImg.style.animation = '';
+    overlayImg.src = img.src;
+    overlayImg.alt = img.alt;
+    overlayLbl.textContent = card.dataset.label;
+    overlay.classList.add('active');
+
+    const voice = getAudio(card.dataset.voice);
+    const se    = getAudio(card.dataset.se);
+
+    // ①ずんだもん読み上げ → ②鳴き声SE → 2秒後に閉じる
+    voice.currentTime = 0;
+    voice.play().catch(() => {});
+
+    voice.onended = () => {
+      if (session !== mySession) return;
+      se.currentTime = 0;
+      se.play().catch(() => {});
+      se.onended = () => {
+        if (session !== mySession) return;
+        setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
+      };
+      // SE が終わらない場合のフォールバック
+      setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
+    };
+
+    // 全体フォールバック
+    setTimeout(() => { if (session === mySession) closeOverlay(); }, 12000);
+  }
 
   document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (isAnimating) return;
-      isAnimating = true;
-
-      const wrap  = card.querySelector('.shape-wrap');
-      const voice = getAudio(card.dataset.voice);
-      const se    = getAudio(card.dataset.se);
-
-      // バウンスアニメーション
-      wrap.classList.add('bouncing');
-      setTimeout(() => wrap.classList.remove('bouncing'), 450);
-
-      // ①ずんだもん読み上げ → 終わったら②鳴き声SE
-      voice.currentTime = 0;
-      voice.play().catch(() => {});
-
-      voice.onended = () => {
-        se.currentTime = 0;
-        se.play().catch(() => {});
-        se.onended = () => { isAnimating = false; };
-      };
-
-      // SEが短い・読み上げより先に終わる場合のフォールバック
-      setTimeout(() => { isAnimating = false; }, 4000);
-    });
+    card.addEventListener('click', () => openOverlay(card));
   });
-
+  overlay.addEventListener('click', closeOverlay);
   document.addEventListener('touchstart', () => {}, { passive: true });
 </script>
 
