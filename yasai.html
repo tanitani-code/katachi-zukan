@@ -9,8 +9,7 @@
 
     :root {
       --bg: #f1f8e9;
-      --card-radius: 32px;
-      --bounce-duration: 0.45s;
+      --card-radius: 24px;
     }
 
     html, body { height: 100dvh; overflow: hidden; }
@@ -51,7 +50,7 @@
       flex-shrink: 0;
       width: 100%;
       text-align: center;
-      padding: clamp(6px, 1.5dvh, 16px) 16px clamp(4px, 1dvh, 8px);
+      padding: clamp(4px, 1dvh, 12px) 16px clamp(3px, 0.8dvh, 6px);
     }
 
     header h1 {
@@ -74,92 +73,111 @@
       min-height: 0;
       width: 100%;
       max-width: 480px;
-      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
+      padding: clamp(6px, 1.5dvh, 10px) clamp(8px, 3vw, 14px);
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: repeat(3, 1fr);
-      gap: clamp(6px, 1.5dvh, 14px);
+      gap: clamp(6px, 1.5dvh, 12px);
     }
 
     /* ===== カード ===== */
     .card {
-      background: #fff;
+      position: relative;
       border-radius: var(--card-radius);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-      padding: clamp(8px, 2dvh, 22px) 8px clamp(6px, 1.5dvh, 16px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(4px, 1dvh, 12px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+      overflow: hidden;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: box-shadow 0.15s;
-      overflow: hidden;
+      transition: box-shadow 0.15s, transform 0.1s;
     }
 
-    .card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
-
-    /* ===== バウンスアニメーション ===== */
-    @keyframes bounce {
-      0%   { transform: scale(1) translateY(0); }
-      20%  { transform: scale(0.88, 1.10) translateY(0); }
-      40%  { transform: scale(1.18, 0.88) translateY(-28px); }
-      55%  { transform: scale(0.94, 1.06) translateY(0); }
-      70%  { transform: scale(1.08, 0.94) translateY(-12px); }
-      82%  { transform: scale(0.98, 1.02) translateY(0); }
-      92%  { transform: scale(1.03, 0.98) translateY(-5px); }
-      100% { transform: scale(1) translateY(0); }
+    .card:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
 
-    .shape-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: clamp(52px, 12dvh, 90px);
-      flex-shrink: 0;
-    }
-
-    .shape-wrap.bouncing {
-      animation: bounce var(--bounce-duration) cubic-bezier(.36,.07,.19,.97) forwards;
-    }
-
-    .shape-wrap img {
+    /* 画像をカード全体に */
+    .card-img {
+      width: 100%;
       height: 100%;
-      width: auto;
-      object-fit: contain;
+      object-fit: cover;
+      display: block;
     }
 
+    /* 名前ラベル：下部に半透明オーバーレイ */
     .label {
-      font-size: clamp(0.95rem, 4.5vw, 1.5rem);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       line-height: 1;
     }
 
-    /* ===== カードカラー ===== */
     .card[data-veg="ninjin"]       { background: #fff3e0; }
-    .card[data-veg="ninjin"] .label       { color: #e64a19; }
+    .card[data-veg="ninjin"] .label       { background: rgba(255,243,224,0.88); color: #e64a19; }
 
     .card[data-veg="tomato"]       { background: #ffebee; }
-    .card[data-veg="tomato"] .label       { color: #c62828; }
+    .card[data-veg="tomato"] .label       { background: rgba(255,235,238,0.88); color: #c62828; }
 
     .card[data-veg="kyuuri"]       { background: #e8f5e9; }
-    .card[data-veg="kyuuri"] .label       { color: #2e7d32; }
+    .card[data-veg="kyuuri"] .label       { background: rgba(232,245,233,0.88); color: #2e7d32; }
 
     .card[data-veg="tamanegi"]     { background: #fff8e1; }
-    .card[data-veg="tamanegi"] .label     { color: #6d4c41; }
+    .card[data-veg="tamanegi"] .label     { background: rgba(255,248,225,0.88); color: #6d4c41; }
 
     .card[data-veg="burokkorii"]   { background: #e8f5e9; }
-    .card[data-veg="burokkorii"] .label   { color: #1b5e20; }
+    .card[data-veg="burokkorii"] .label   { background: rgba(232,245,233,0.88); color: #1b5e20; }
 
     .card[data-veg="toumorokoshi"] { background: #fffde7; }
-    .card[data-veg="toumorokoshi"] .label { color: #f57f17; }
+    .card[data-veg="toumorokoshi"] .label { background: rgba(255,253,231,0.88); color: #f57f17; }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-img {
+      width: min(80vw, 80dvh);
+      height: min(80vw, 80dvh);
+      object-fit: cover;
+      border-radius: 28px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
 
     footer {
       flex-shrink: 0;
-      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
+      padding: clamp(4px, 1dvh, 10px) 0 clamp(6px, 1.5dvh, 14px);
       color: #bcaaa4;
       font-size: 0.7rem;
       letter-spacing: 0.05em;
@@ -178,38 +196,44 @@
 </header>
 
 <main>
-  <div class="card" data-veg="ninjin" data-sound="sounds/ninjin.mp3">
-    <div class="shape-wrap"><img src="images/vegetables/ninjin.jpg" alt="にんじん"></div>
+  <div class="card" data-veg="ninjin" data-sound="sounds/ninjin.mp3" data-label="にんじん">
+    <img class="card-img" src="images/vegetables/ninjin.jpg" alt="にんじん">
     <span class="label">にんじん</span>
   </div>
 
-  <div class="card" data-veg="tomato" data-sound="sounds/tomato.mp3">
-    <div class="shape-wrap"><img src="images/vegetables/tomato.jpg" alt="トマト"></div>
+  <div class="card" data-veg="tomato" data-sound="sounds/tomato.mp3" data-label="トマト">
+    <img class="card-img" src="images/vegetables/tomato.jpg" alt="トマト">
     <span class="label">トマト</span>
   </div>
 
-  <div class="card" data-veg="kyuuri" data-sound="sounds/kyuuri.mp3">
-    <div class="shape-wrap"><img src="images/vegetables/kyuuri.jpg" alt="きゅうり"></div>
+  <div class="card" data-veg="kyuuri" data-sound="sounds/kyuuri.mp3" data-label="きゅうり">
+    <img class="card-img" src="images/vegetables/kyuuri.jpg" alt="きゅうり">
     <span class="label">きゅうり</span>
   </div>
 
-  <div class="card" data-veg="tamanegi" data-sound="sounds/tamanegi.mp3">
-    <div class="shape-wrap"><img src="images/vegetables/tamanegi.png" alt="たまねぎ"></div>
+  <div class="card" data-veg="tamanegi" data-sound="sounds/tamanegi.mp3" data-label="たまねぎ">
+    <img class="card-img" src="images/vegetables/tamanegi.png" alt="たまねぎ">
     <span class="label">たまねぎ</span>
   </div>
 
-  <div class="card" data-veg="burokkorii" data-sound="sounds/burokkorii.mp3">
-    <div class="shape-wrap"><img src="images/vegetables/burokkorii.png" alt="ブロッコリー"></div>
+  <div class="card" data-veg="burokkorii" data-sound="sounds/burokkorii.mp3" data-label="ブロッコリー">
+    <img class="card-img" src="images/vegetables/burokkorii.png" alt="ブロッコリー">
     <span class="label">ブロッコリー</span>
   </div>
 
-  <div class="card" data-veg="toumorokoshi" data-sound="sounds/toumorokoshi.mp3">
-    <div class="shape-wrap"><img src="images/vegetables/toumorokoshi.jpg" alt="とうもろこし"></div>
+  <div class="card" data-veg="toumorokoshi" data-sound="sounds/toumorokoshi.mp3" data-label="とうもろこし">
+    <img class="card-img" src="images/vegetables/toumorokoshi.jpg" alt="とうもろこし">
     <span class="label">とうもろこし</span>
   </div>
 </main>
 
 <footer>やさい図鑑 ✦ 2さいから</footer>
+
+<!-- 拡大オーバーレイ -->
+<div id="overlay">
+  <img id="overlay-img" src="" alt="">
+  <span id="overlay-label"></span>
+</div>
 
 <script>
   const audioCache = {};
@@ -222,26 +246,61 @@
     return audioCache[src];
   }
 
+  // 先読み
   document.querySelectorAll('.card').forEach(card => {
     if (card.dataset.sound) getAudio(card.dataset.sound);
   });
 
-  let isAnimating = false;
+  const overlay     = document.getElementById('overlay');
+  const overlayImg  = document.getElementById('overlay-img');
+  const overlayLbl  = document.getElementById('overlay-label');
+
+  let isOpen = false;
+  let closeTimer = null;
+
+  function closeOverlay() {
+    clearTimeout(closeTimer);
+    overlay.classList.remove('active');
+    isOpen = false;
+  }
+
+  function openOverlay(card) {
+    if (isOpen) return;
+    isOpen = true;
+
+    const img   = card.querySelector('.card-img');
+    const label = card.dataset.label;
+    const sound = card.dataset.sound;
+
+    // 画像・ラベルをセット（アニメーションリセット）
+    overlayImg.style.animation = 'none';
+    overlayImg.offsetHeight;  // reflow
+    overlayImg.style.animation = '';
+    overlayImg.src = img.src;
+    overlayImg.alt = img.alt;
+    overlayLbl.textContent = label;
+
+    overlay.classList.add('active');
+
+    // 音声再生 → 終了後2秒で閉じる
+    const audio = getAudio(sound);
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+
+    audio.onended = () => {
+      closeTimer = setTimeout(closeOverlay, 2000);
+    };
+
+    // フォールバック（音声が鳴らない場合）
+    closeTimer = setTimeout(closeOverlay, 8000);
+  }
+
   document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (isAnimating) return;
-      isAnimating = true;
-      const wrap = card.querySelector('.shape-wrap');
-      wrap.classList.add('bouncing');
-      const audio = getAudio(card.dataset.sound);
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-      setTimeout(() => {
-        wrap.classList.remove('bouncing');
-        isAnimating = false;
-      }, 450);
-    });
+    card.addEventListener('click', () => openOverlay(card));
   });
+
+  // オーバーレイタップで即閉じ
+  overlay.addEventListener('click', closeOverlay);
 
   document.addEventListener('touchstart', () => {}, { passive: true });
 </script>
