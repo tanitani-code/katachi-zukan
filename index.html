@@ -158,11 +158,11 @@
       filter: drop-shadow(0 4px 8px rgba(239,83,80,0.5));
     }
 
+    /* ハートはSVG viewBoxでスケール（clip-path:path()は絶対px座標のためサイズ変化で欠ける） */
     .shape-haato {
-      width: var(--s); height: calc(var(--s) * 0.93);
-      background: #ec407a;
-      clip-path: path("M41 70 C41 70 4 46 4 22 C4 10 13 2 24 2 C31 2 38 6 41 12 C44 6 51 2 58 2 C69 2 78 10 78 22 C78 46 41 70 41 70 Z");
+      width: var(--s); height: var(--s);
       filter: drop-shadow(0 4px 8px rgba(236,64,122,0.45));
+      overflow: visible;
     }
 
     .shape-tsuki {
@@ -257,7 +257,11 @@
     <span class="label">ほし</span>
   </div>
   <div class="card" data-shape="haato"   data-sound="sounds/haato.mp3"   data-label="ハート">
-    <div class="shape-wrap"><div class="shape-haato"></div></div>
+    <div class="shape-wrap">
+      <svg class="shape-haato" viewBox="0 0 82 72" xmlns="http://www.w3.org/2000/svg">
+        <path d="M41 70 C41 70 4 46 4 22 C4 10 13 2 24 2 C31 2 38 6 41 12 C44 6 51 2 58 2 C69 2 78 10 78 22 C78 46 41 70 41 70 Z" fill="#ec407a"/>
+      </svg>
+    </div>
     <span class="label">ハート</span>
   </div>
   <div class="card" data-shape="tsuki"   data-sound="sounds/tsuki.mp3"   data-label="つき">
