@@ -28,9 +28,12 @@
       max-width: 540px;
       padding: clamp(5px, 1.2dvh, 10px) 14px 0;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .nav-back {
+    .nav-back, .bgm-toggle {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -44,6 +47,8 @@
       border-radius: 50%;
       box-shadow: 0 2px 8px rgba(0,0,0,0.12);
       -webkit-tap-highlight-color: transparent;
+      border: none;
+      cursor: pointer;
     }
 
     header {
@@ -208,7 +213,10 @@
 
 <nav>
   <a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a>
+  <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
 </nav>
+
+<audio id="bgm" src="sounds/bgm.mp3" loop preload="auto"></audio>
 
 <header>
   <h1>🔢 かず図鑑</h1>
@@ -261,6 +269,20 @@
     card.appendChild(num);
     card.appendChild(dots);
     grid.appendChild(card);
+  });
+
+  // ===== BGM =====
+  const bgm = document.getElementById('bgm');
+  const bgmToggle = document.getElementById('bgmToggle');
+  bgm.volume = 0.25;
+  function tryPlayBgm() { bgm.play().catch(() => {}); }
+  tryPlayBgm();
+  document.addEventListener('click', tryPlayBgm, { once: true });
+  document.addEventListener('touchstart', tryPlayBgm, { once: true });
+  bgmToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    bgm.muted = !bgm.muted;
+    bgmToggle.textContent = bgm.muted ? '🔇' : '🔊';
   });
 
   const audioCache = {};

@@ -24,10 +24,29 @@
     }
 
     header {
+      position: relative;
       flex-shrink: 0;
       width: 100%;
       text-align: center;
       padding: clamp(10px, 2.5dvh, 20px) 16px clamp(4px, 1dvh, 8px);
+    }
+
+    .bgm-toggle {
+      position: absolute;
+      top: clamp(10px, 2.5dvh, 20px);
+      right: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(34px, 8vw, 42px);
+      height: clamp(34px, 8vw, 42px);
+      font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+      background: #fff3e0;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      border: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     header h1 {
@@ -199,9 +218,12 @@
 <body>
 
 <header>
+  <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
   <h1>はじめて図鑑</h1>
   <p>すきな ずかんを えらんでね</p>
 </header>
+
+<audio id="bgm" src="sounds/bgm.mp3" loop preload="auto"></audio>
 
 <main>
   <a class="card" data-cat="katachi" href="katachi.html">
@@ -243,6 +265,21 @@
 </main>
 
 <footer>はじめて図鑑 ✦ 2さいから</footer>
+
+<script>
+  const bgm = document.getElementById('bgm');
+  const bgmToggle = document.getElementById('bgmToggle');
+  bgm.volume = 0.25;
+  function tryPlayBgm() { bgm.play().catch(() => {}); }
+  tryPlayBgm();
+  document.addEventListener('click', tryPlayBgm, { once: true });
+  document.addEventListener('touchstart', tryPlayBgm, { once: true });
+  bgmToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    bgm.muted = !bgm.muted;
+    bgmToggle.textContent = bgm.muted ? '🔇' : '🔊';
+  });
+</script>
 
 </body>
 </html>
