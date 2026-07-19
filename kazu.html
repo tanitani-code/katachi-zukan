@@ -213,10 +213,14 @@
 
 <nav>
   <a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a>
-  <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  <div style="display:flex; gap:6px;">
+    <button id="fxToggle" class="fx-toggle" aria-label="エフェクト切替"></button>
+    <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  </div>
 </nav>
 
 <audio id="bgm" src="sounds/bgm.mp3" loop preload="auto"></audio>
+<script src="effects.js"></script>
 
 <header>
   <h1>🔢 かず図鑑</h1>
@@ -284,6 +288,7 @@
     bgm.muted = !bgm.muted;
     bgmToggle.textContent = bgm.muted ? '🔇' : '🔊';
   });
+  ZukanFX.initToggle(document.getElementById('fxToggle'));
 
   const audioCache = {};
   function getAudio(src) {
@@ -328,6 +333,7 @@
     overlayVisual.offsetHeight;
     overlayVisual.style.animation = '';
     overlay.classList.add('active');
+    ZukanFX.burst(overlay, card);
 
     const audio = getAudio(card.dataset.sound);
     audio.currentTime = 0;
@@ -341,7 +347,10 @@
 
   grid.addEventListener('click', e => {
     const card = e.target.closest('.card');
-    if (card) openOverlay(card);
+    if (card) {
+      ZukanFX.tap(card);
+      openOverlay(card);
+    }
   });
   overlay.addEventListener('click', closeOverlay);
   document.addEventListener('touchstart', () => {}, { passive: true });

@@ -195,10 +195,14 @@
 
 <nav>
   <a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a>
-  <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  <div style="display:flex; gap:6px;">
+    <button id="fxToggle" class="fx-toggle" aria-label="エフェクト切替"></button>
+    <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  </div>
 </nav>
 
 <audio id="bgm" src="sounds/bgm.mp3" loop preload="auto"></audio>
+<script src="effects.js"></script>
 
 <header>
   <h1>🥦 やさい図鑑</h1>
@@ -259,6 +263,7 @@
     bgm.muted = !bgm.muted;
     bgmToggle.textContent = bgm.muted ? '🔇' : '🔊';
   });
+  ZukanFX.initToggle(document.getElementById('fxToggle'));
 
   const audioCache = {};
   function getAudio(src) {
@@ -306,6 +311,7 @@
     overlayLbl.textContent = label;
 
     overlay.classList.add('active');
+    ZukanFX.burst(overlay, card);
 
     // 音声再生 → 終了後2秒で閉じる
     const audio = getAudio(sound);
@@ -322,7 +328,10 @@
   }
 
   document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => openOverlay(card));
+    card.addEventListener('click', () => {
+      ZukanFX.tap(card);
+      openOverlay(card);
+    });
   });
 
   // オーバーレイタップで即閉じ
