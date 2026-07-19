@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>かたち図鑑</title>
+  <title>ごっこGO はじめて図鑑</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #fffde7;
+      --bg: #fff9e6;
       --card-radius: 24px;
-      --s: clamp(44px, 10dvh, 78px);
     }
 
     html, body { height: 100dvh; overflow: hidden; }
@@ -25,51 +24,38 @@
     }
 
     header {
+      flex-shrink: 0;
       width: 100%;
       text-align: center;
-      padding: clamp(8px, 2.5dvh, 20px) 16px clamp(4px, 1dvh, 8px);
-      flex-shrink: 0;
+      padding: clamp(10px, 2.5dvh, 20px) 16px clamp(4px, 1dvh, 8px);
     }
 
     header h1 {
-      font-size: clamp(1.2rem, 5vw, 2rem);
-      color: #f57f17;
-      letter-spacing: 0.15em;
-      text-shadow: 2px 2px 0 #ffe082;
+      font-size: clamp(1.15rem, 5.2vw, 2rem);
+      color: #ef6c00;
+      letter-spacing: 0.08em;
+      text-shadow: 2px 2px 0 #ffe0b2;
+      line-height: 1.3;
     }
 
     header p {
-      font-size: clamp(0.75rem, 3vw, 1rem);
+      font-size: clamp(0.7rem, 2.8vw, 0.95rem);
       color: #a1887f;
-      margin-top: 2px;
+      margin-top: 4px;
       letter-spacing: 0.1em;
     }
 
-    .nav-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: clamp(0.75rem, 3.2vw, 0.95rem);
-      font-weight: 700;
-      color: #5c6bc0;
-      text-decoration: none;
-      background: #e8eaf6;
-      border-radius: 20px;
-      padding: 5px 14px;
-      margin-top: clamp(4px, 1dvh, 8px);
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    /* ===== グリッド：2列×4行（7カテゴリ＋のりものは全幅） ===== */
     main {
       flex: 1;
       min-height: 0;
       width: 100%;
       max-width: 480px;
-      padding: clamp(6px, 1.5dvh, 12px) clamp(8px, 3vw, 16px);
+      padding: clamp(4px, 1dvh, 10px) clamp(8px, 3vw, 16px);
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: repeat(3, 1fr);
-      gap: clamp(6px, 1.5dvh, 14px);
+      grid-template-rows: repeat(3, 1fr) clamp(50px, 12dvh, 76px);
+      gap: clamp(6px, 1.4dvh, 12px);
     }
 
     /* ===== カード ===== */
@@ -86,16 +72,24 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      text-decoration: none;
     }
 
     .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
 
-    .shape-wrap {
+    .icon-wrap {
       flex: 1;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+    }
+
+    .icon-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .label {
@@ -103,126 +97,101 @@
       bottom: 0; left: 0; right: 0;
       padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
       text-align: center;
-      font-size: clamp(0.85rem, 4vw, 1.3rem);
+      font-size: clamp(0.85rem, 4vw, 1.25rem);
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       line-height: 1;
     }
 
-    /* ===== カードカラー ===== */
-    .card[data-shape="maru"]    { background: #fff8e1; }
-    .card[data-shape="maru"] .label    { background: rgba(255,248,225,0.88); color: #f57f17; }
-
-    .card[data-shape="sankaku"] { background: #e8f5e9; }
-    .card[data-shape="sankaku"] .label { background: rgba(232,245,233,0.88); color: #2e7d32; }
-
-    .card[data-shape="shikaku"] { background: #e3f2fd; }
-    .card[data-shape="shikaku"] .label { background: rgba(227,242,253,0.88); color: #1565c0; }
-
-    .card[data-shape="hoshi"]   { background: #fce4ec; }
-    .card[data-shape="hoshi"] .label   { background: rgba(252,228,236,0.88); color: #c62828; }
-
-    .card[data-shape="haato"]   { background: #fce4ec; }
-    .card[data-shape="haato"] .label   { background: rgba(252,228,236,0.88); color: #ad1457; }
-
-    .card[data-shape="tsuki"]   { background: #ede7f6; }
-    .card[data-shape="tsuki"] .label   { background: rgba(237,231,246,0.88); color: #4527a0; }
-
-    /* ===== CSS図形 ===== */
-    .shape-maru {
-      width: var(--s); height: var(--s);
+    /* ===== CSS図形アイコン（かたち・いろ・かず） ===== */
+    .icon-shape {
+      width: clamp(36px, 9dvh, 62px);
+      height: clamp(36px, 9dvh, 62px);
       border-radius: 50%;
       background: #ffca28;
       box-shadow: 0 4px 12px rgba(255,202,40,0.5);
     }
 
-    .shape-sankaku {
-      width: 0; height: 0;
-      border-left:  calc(var(--s) * 0.55) solid transparent;
-      border-right: calc(var(--s) * 0.55) solid transparent;
-      border-bottom: var(--s) solid #66bb6a;
-      filter: drop-shadow(0 4px 8px rgba(102,187,106,0.5));
-    }
-
-    .shape-shikaku {
-      width: var(--s); height: var(--s);
-      background: #42a5f5;
-      border-radius: clamp(4px, 1vw, 8px);
-      box-shadow: 0 4px 12px rgba(66,165,245,0.5);
-    }
-
-    .shape-hoshi {
-      width: var(--s); height: var(--s);
-      background: #ef5350;
-      clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-      filter: drop-shadow(0 4px 8px rgba(239,83,80,0.5));
-    }
-
-    /* ハートはSVG viewBoxでスケール（clip-path:path()は絶対px座標のためサイズ変化で欠ける） */
-    .shape-haato {
-      width: var(--s); height: var(--s);
-      filter: drop-shadow(0 4px 8px rgba(236,64,122,0.45));
-      overflow: visible;
-    }
-
-    .shape-tsuki {
-      width: var(--s); height: var(--s);
-      border-radius: 50%;
-      background: transparent;
-      box-shadow: inset calc(var(--s)*-0.25) calc(var(--s)*-0.05) 0 calc(var(--s)*0.055) #b39ddb;
-      filter: drop-shadow(0 4px 8px rgba(179,157,219,0.5));
-    }
-
-    /* ===== オーバーレイ ===== */
-    #overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: clamp(12px, 3dvh, 24px);
-    }
-    #overlay.active { display: flex; }
-
-    @keyframes pop-in {
-      0%   { transform: scale(0.6); opacity: 0; }
-      70%  { transform: scale(1.06); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    #overlay-visual {
-      width: min(80vw, 80dvh);
-      height: min(80vw, 80dvh);
-      border-radius: 28px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    .icon-dots {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+      gap: clamp(4px, 1.2vw, 8px);
+    }
+    .icon-dots span {
+      width: clamp(16px, 4.2dvh, 26px);
+      height: clamp(16px, 4.2dvh, 26px);
+      border-radius: 50%;
+    }
+    .icon-dots span:nth-child(1) { background: #e53935; }
+    .icon-dots span:nth-child(2) { background: #43a047; }
+    .icon-dots span:nth-child(3) { background: #1e88e5; }
+
+    .icon-num {
+      font-size: clamp(1.6rem, 8dvh, 2.6rem);
+      font-weight: 900;
+      color: #558b2f;
+      line-height: 1;
     }
 
-    #overlay-visual .shape-wrap {
-      transform: scale(2.8);
-      flex: none;
-    }
+    /* ===== カードカラー ===== */
+    .card[data-cat="katachi"]   { background: #fff8e1; }
+    .card[data-cat="katachi"] .label   { background: rgba(255,248,225,0.9); color: #f57f17; }
 
-    #overlay-label {
-      font-size: clamp(1.6rem, 8vw, 2.8rem);
+    .card[data-cat="iro"]       { background: #f3f8ff; }
+    .card[data-cat="iro"] .label       { background: rgba(243,248,255,0.9); color: #5c6bc0; }
+
+    .card[data-cat="kazu"]      { background: #f9fbe7; }
+    .card[data-cat="kazu"] .label      { background: rgba(249,251,231,0.9); color: #558b2f; }
+
+    .card[data-cat="kudamono"]  { background: #fff5f5; }
+    .card[data-cat="kudamono"] .label  { background: rgba(255,245,245,0.9); color: #c62828; }
+
+    .card[data-cat="yasai"]    { background: #e8f5e9; }
+    .card[data-cat="yasai"] .label     { background: rgba(232,245,233,0.9); color: #2e7d32; }
+
+    .card[data-cat="doubutsu"]  { background: #f1f8e9; }
+    .card[data-cat="doubutsu"] .label  { background: rgba(241,248,233,0.9); color: #388e3c; }
+
+    /* ===== のりもの：準備中（全幅・タップ不可） ===== */
+    .card[data-cat="norimono"] {
+      grid-column: 1 / 3;
+      background: #eceff1;
+      flex-direction: row;
+      gap: clamp(8px, 2vw, 14px);
+      cursor: default;
+      opacity: 0.85;
+    }
+    .card[data-cat="norimono"]:active { transform: none; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+    .card[data-cat="norimono"] .icon-wrap { flex: none; width: clamp(40px, 9dvh, 60px); height: clamp(40px, 9dvh, 60px); }
+    .card[data-cat="norimono"] .icon-shape-bus {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: clamp(1.5rem, 7dvh, 2.2rem);
+    }
+    .card[data-cat="norimono"] .label {
+      position: static;
+      background: none !important;
+      color: #607d8b;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .card[data-cat="norimono"] .label .sub {
+      font-size: clamp(0.6rem, 2.4vw, 0.75rem);
       font-weight: 700;
-      letter-spacing: 0.12em;
-      color: #fff;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      color: #90a4ae;
+      background: #fff;
+      border-radius: 10px;
+      padding: 1px 8px;
+      letter-spacing: 0.05em;
     }
 
     footer {
       flex-shrink: 0;
-      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
+      padding: clamp(4px, 1dvh, 10px) 0 clamp(6px, 1.5dvh, 14px);
       color: #bcaaa4;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       letter-spacing: 0.05em;
     }
   </style>
@@ -230,106 +199,50 @@
 <body>
 
 <header>
-  <h1>🌈 かたち図鑑</h1>
-  <p>たっぷして あそぼう！</p>
-  <a class="nav-link" href="iro.html">🎨 いろ図鑑へ ▶</a>
-  <a class="nav-link" href="kazu.html">🔢 かず図鑑へ ▶</a>
-  <a class="nav-link" href="kudamono.html">🍎 くだもの図鑑へ ▶</a>
-  <a class="nav-link" href="doubutsu.html">🐾 どうぶつ図鑑へ ▶</a>
-  <a class="nav-link" href="yasai.html">🥦 やさい図鑑へ ▶</a>
+  <h1>ごっこGO<br>はじめて図鑑</h1>
+  <p>すきな ずかんを えらんでね</p>
 </header>
 
 <main>
-  <div class="card" data-shape="maru"    data-sound="sounds/maru.mp3"    data-label="まる">
-    <div class="shape-wrap"><div class="shape-maru"></div></div>
-    <span class="label">まる</span>
-  </div>
-  <div class="card" data-shape="sankaku" data-sound="sounds/sankaku.mp3" data-label="さんかく">
-    <div class="shape-wrap"><div class="shape-sankaku"></div></div>
-    <span class="label">さんかく</span>
-  </div>
-  <div class="card" data-shape="shikaku" data-sound="sounds/shikaku.mp3" data-label="しかく">
-    <div class="shape-wrap"><div class="shape-shikaku"></div></div>
-    <span class="label">しかく</span>
-  </div>
-  <div class="card" data-shape="hoshi"   data-sound="sounds/hoshi.mp3"   data-label="ほし">
-    <div class="shape-wrap"><div class="shape-hoshi"></div></div>
-    <span class="label">ほし</span>
-  </div>
-  <div class="card" data-shape="haato"   data-sound="sounds/haato.mp3"   data-label="ハート">
-    <div class="shape-wrap">
-      <svg class="shape-haato" viewBox="0 0 82 72" xmlns="http://www.w3.org/2000/svg">
-        <path d="M41 70 C41 70 4 46 4 22 C4 10 13 2 24 2 C31 2 38 6 41 12 C44 6 51 2 58 2 C69 2 78 10 78 22 C78 46 41 70 41 70 Z" fill="#ec407a"/>
-      </svg>
+  <a class="card" data-cat="katachi" href="katachi.html">
+    <div class="icon-wrap"><div class="icon-shape"></div></div>
+    <span class="label">かたち</span>
+  </a>
+
+  <a class="card" data-cat="iro" href="iro.html">
+    <div class="icon-wrap">
+      <div class="icon-dots"><span></span><span></span><span></span></div>
     </div>
-    <span class="label">ハート</span>
-  </div>
-  <div class="card" data-shape="tsuki"   data-sound="sounds/tsuki.mp3"   data-label="つき">
-    <div class="shape-wrap"><div class="shape-tsuki"></div></div>
-    <span class="label">つき</span>
+    <span class="label">いろ</span>
+  </a>
+
+  <a class="card" data-cat="kazu" href="kazu.html">
+    <div class="icon-wrap"><span class="icon-num">123</span></div>
+    <span class="label">かず</span>
+  </a>
+
+  <a class="card" data-cat="kudamono" href="kudamono.html">
+    <div class="icon-wrap"><img src="images/fruits/ringo.png" alt="くだもの"></div>
+    <span class="label">くだもの</span>
+  </a>
+
+  <a class="card" data-cat="yasai" href="yasai.html">
+    <div class="icon-wrap"><img src="images/vegetables/burokkorii.png" alt="やさい"></div>
+    <span class="label">やさい</span>
+  </a>
+
+  <a class="card" data-cat="doubutsu" href="doubutsu.html">
+    <div class="icon-wrap"><img src="images/animals/inu.png" alt="どうぶつ"></div>
+    <span class="label">どうぶつ</span>
+  </a>
+
+  <div class="card" data-cat="norimono">
+    <div class="icon-wrap"><div class="icon-shape-bus">🚌</div></div>
+    <span class="label">のりもの<span class="sub">じゅんびちゅう</span></span>
   </div>
 </main>
 
-<footer>かたち図鑑 ✦ 2さいから</footer>
-
-<div id="overlay">
-  <div id="overlay-visual"></div>
-  <span id="overlay-label"></span>
-</div>
-
-<script>
-  const audioCache = {};
-  function getAudio(src) {
-    if (!audioCache[src]) { const a = new Audio(src); a.preload = 'auto'; audioCache[src] = a; }
-    return audioCache[src];
-  }
-  document.querySelectorAll('.card').forEach(card => { if (card.dataset.sound) getAudio(card.dataset.sound); });
-
-  const overlay = document.getElementById('overlay');
-  const overlayVisual = document.getElementById('overlay-visual');
-  const overlayLbl = document.getElementById('overlay-label');
-  let isOpen = false, session = 0;
-
-  function closeOverlay() {
-    session++;
-    overlay.classList.remove('active');
-    isOpen = false;
-  }
-
-  function openOverlay(card) {
-    if (isOpen) return;
-    isOpen = true;
-    const mySession = ++session;
-
-    // shape-wrap をクローンして拡大
-    const clone = card.querySelector('.shape-wrap').cloneNode(true);
-    clone.classList.remove('bouncing');
-    overlayVisual.style.background = getComputedStyle(card).backgroundColor;
-    overlayVisual.innerHTML = '';
-    overlayVisual.appendChild(clone);
-
-    overlayLbl.textContent = card.dataset.label;
-    overlayVisual.style.animation = 'none';
-    overlayVisual.offsetHeight;
-    overlayVisual.style.animation = '';
-    overlay.classList.add('active');
-
-    const audio = getAudio(card.dataset.sound);
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-    audio.onended = () => {
-      if (session !== mySession) return;
-      setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
-    };
-    setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
-  }
-
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => openOverlay(card));
-  });
-  overlay.addEventListener('click', closeOverlay);
-  document.addEventListener('touchstart', () => {}, { passive: true });
-</script>
+<footer>ごっこGO はじめて図鑑 ✦ 2さいから</footer>
 
 </body>
 </html>
