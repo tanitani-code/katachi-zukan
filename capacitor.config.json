@@ -1,0 +1,9 @@
+{
+  "appId": "jp.hajimetezukan.app",
+  "appName": "はじめて図鑑",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#fff8e8"
+  }
+}
