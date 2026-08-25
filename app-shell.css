@@ -1,0 +1,85 @@
+/* Androidアプリと全図鑑ページで共有する画面構成 */
+
+/* トップはカテゴリ数が増えてもカードを潰さず、自然にスクロールする */
+html.zukan-top,
+html.zukan-top body {
+  height: auto;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body.zukan-top main {
+  flex: none;
+  min-height: auto;
+  grid-template-rows: none;
+  grid-auto-rows: clamp(156px, 24dvh, 210px);
+  overflow: visible;
+}
+
+body.zukan-top .card[data-cat="norimono"] {
+  min-height: clamp(156px, 24dvh, 210px);
+}
+
+/* 図鑑ページの戻る操作を親指が届く下部中央へ移す */
+body.zukan-category nav.has-app-exit {
+  justify-content: space-between;
+}
+
+body.zukan-category footer.bottom-nav {
+  width: 100%;
+  max-width: 480px;
+  min-height: calc(clamp(58px, 8dvh, 68px) + env(safe-area-inset-bottom, 0px));
+  padding: 5px 0 max(6px, env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.zukan-category footer.bottom-nav .nav-back {
+  width: clamp(50px, 14vw, 58px);
+  height: clamp(50px, 14vw, 58px);
+  flex: 0 0 auto;
+  font-size: clamp(1.55rem, 7vw, 2rem);
+  border: 3px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+}
+
+body.zukan-category footer.bottom-nav .nav-back:active {
+  transform: scale(0.92);
+}
+
+/* Android版だけに表示する保護者向け終了ボタン */
+.app-exit-button {
+  position: relative;
+  width: clamp(58px, 15vw, 70px);
+  height: clamp(38px, 9vw, 44px);
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 0;
+  border-radius: 50%;
+  background: #efebe9;
+  color: #8d6e63;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  font-family: inherit;
+  font-size: clamp(0.72rem, 3.2vw, 0.9rem);
+  font-weight: 700;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.zukan-top header .app-exit-button {
+  position: absolute;
+  top: clamp(10px, 2.5dvh, 20px);
+  left: 16px;
+}
+  to { width: 100%; }
+}
+
+.app-exit-button:active {
+  background: #ffe0b2;
+  transform: scale(0.94);
+}

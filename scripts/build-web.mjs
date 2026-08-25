@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const outputRoot = join(projectRoot, "www");
 const webExtensions = new Set([".html", ".css", ".js", ".json", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".mp3", ".wav", ".ogg"]);
-const excludedDirectories = new Set([".git", "android", "node_modules", "scripts", "www"]);
+const excludedDirectories = new Set([".git", ".android-tools", "android", "android-cap7-backup", "node_modules", "scripts", "www"]);
 const excludedFiles = [/^preview\.html$/i, / - コピー/i, /^images\/fruits\/l_cwojdzinski-orange-2533197\.jpg$/i, /^images\/fruits\/mikan_sdxl_test\.png$/i, /^images\/vehicles\/.+_[1-4]\.png$/i];
 
 function collectFiles(directory) {
