@@ -83,3 +83,11 @@ body.zukan-top header .app-exit-button {
   background: #ffe0b2;
   transform: scale(0.94);
 }
+
+
+/* Enlarged catalog overlay */
+#overlay-img,
+#overlay-visual {
+  width: min(92vw, 82dvh) !important;
+  height: min(92vw, 82dvh) !important;
+}
