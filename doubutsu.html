@@ -313,7 +313,21 @@
   // ===== BGM =====
   const bgm = document.getElementById('bgm');
   const bgmToggle = document.getElementById('bgmToggle');
-  bgm.volume = 0.25;
+  const BGM_NORMAL_VOLUME = 0.25;
+  const BGM_DUCKED_VOLUME = 0.06;
+  bgm.volume = BGM_NORMAL_VOLUME;
+  let bgmFadeFrame = 0;
+  function fadeBgmTo(target, duration = 180) {
+    cancelAnimationFrame(bgmFadeFrame);
+    const startVolume = bgm.volume;
+    const startedAt = performance.now();
+    function step(now) {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      bgm.volume = startVolume + (target - startVolume) * progress;
+      if (progress < 1) bgmFadeFrame = requestAnimationFrame(step);
+    }
+    bgmFadeFrame = requestAnimationFrame(step);
+  }
   function tryPlayBgm() { bgm.play().catch(() => {}); }
   tryPlayBgm();
   document.addEventListener('click', tryPlayBgm, { once: true });
@@ -351,6 +365,7 @@
     session++;
     overlay.classList.remove('active');
     isOpen = false;
+    fadeBgmTo(BGM_NORMAL_VOLUME, 280);
   }
 
   function openOverlay(card) {
@@ -367,6 +382,7 @@
     overlayLbl.textContent = card.dataset.label;
     overlay.classList.add('active');
     ZukanFX.burst(overlay, card);
+    fadeBgmTo(BGM_DUCKED_VOLUME);
 
     const voice = getAudio(card.dataset.voice);
     const seSrc = card.dataset.se;

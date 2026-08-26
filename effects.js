@@ -7,6 +7,29 @@
  */
 (function () {
   const KEY = 'zukanFxVariant';
+  let tapAudioContext = null;
+
+  function playTapSound() {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    try {
+      tapAudioContext ||= new AudioCtx();
+      if (tapAudioContext.state === 'suspended') tapAudioContext.resume();
+
+      const now = tapAudioContext.currentTime;
+      const oscillator = tapAudioContext.createOscillator();
+      const gain = tapAudioContext.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(520, now);
+      oscillator.frequency.exponentialRampToValueAtTime(760, now + 0.07);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.16, now + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+      oscillator.connect(gain).connect(tapAudioContext.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 0.13);
+    } catch (_) {}
+  }
   function getVariant() { return localStorage.getItem(KEY) || 'A'; }
   function setVariant(v) { localStorage.setItem(KEY, v); }
 
@@ -94,6 +117,7 @@
   // 即時タップフィードバック（card は position:relative + overflow:hidden 前提）
   function tap(card) {
     if (!card) return;
+    playTapSound();
     const color = getAccentColor(card);
     const el = document.createElement('div');
     if (getVariant() === 'B') {
