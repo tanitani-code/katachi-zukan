@@ -1,0 +1,95 @@
+/* 7項目以上の図鑑で有効になる共通ページ送り */
+
+body.zukan-category main.page-changing .card:not([hidden]) {
+  animation: catalog-page-in 180ms ease-out both;
+}
+
+@keyframes catalog-page-in {
+  from { opacity: 0; transform: translateX(var(--page-direction, 18px)) scale(0.98); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+body.zukan-category footer.bottom-nav.paginated {
+  display: grid;
+  grid-template-columns: clamp(52px, 15vw, 64px) 1fr clamp(52px, 15vw, 64px);
+  gap: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.catalog-page-arrow {
+  width: clamp(48px, 13vw, 56px);
+  height: clamp(48px, 13vw, 56px);
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.82);
+  color: #6d4c41;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  font-family: inherit;
+  font-size: clamp(1.7rem, 8vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.catalog-page-arrow:active:not(:disabled) {
+  transform: scale(0.9);
+}
+
+.catalog-page-arrow:disabled {
+  opacity: 0.18;
+  box-shadow: none;
+}
+
+.catalog-page-center {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.catalog-page-center .nav-back {
+  width: clamp(44px, 12vw, 52px) !important;
+  height: clamp(44px, 12vw, 52px) !important;
+}
+
+.catalog-page-dots {
+  min-height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.catalog-page-dot {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  position: relative;
+}
+
+.catalog-page-dot::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: #d7ccc8;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.catalog-page-dot.active::after {
+  background: #ff9800;
+  transform: scale(1.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.zukan-category main.page-changing .card:not([hidden]) {
+    animation: none;
+  }
+}
