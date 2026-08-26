@@ -1,7 +1,12 @@
 (() => {
   const isTop = /(^|\/)index\.html$/.test(location.pathname) || location.pathname.endsWith("/");
+  const pageName = isTop
+    ? "top"
+    : (location.pathname.split("/").pop() || "").replace(/\.html$/i, "");
   document.documentElement.classList.add(isTop ? "zukan-top" : "zukan-category");
   document.body.classList.add(isTop ? "zukan-top" : "zukan-category");
+  document.documentElement.classList.add(`zukan-page-${pageName}`);
+  document.body.classList.add("zukan-scene", `zukan-page-${pageName}`);
 
   if (!isTop) {
     const backButton = document.querySelector(".nav-back");

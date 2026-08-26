@@ -76,8 +76,6 @@ body.zukan-top header .app-exit-button {
   top: clamp(10px, 2.5dvh, 20px);
   left: 16px;
 }
-  to { width: 100%; }
-}
 
 .app-exit-button:active {
   background: #ffe0b2;
@@ -90,4 +88,41 @@ body.zukan-top header .app-exit-button {
 #overlay-visual {
   width: min(92vw, 82dvh) !important;
   height: min(92vw, 82dvh) !important;
+}
+
+/* カテゴリーごとに大きく景色が変わる絵本背景 */
+body.zukan-scene {
+  background-color: #dff1ff;
+  background-image: var(--scene-image);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+body.zukan-page-top      { --scene-image: url("images/backgrounds/top.webp"); }
+body.zukan-page-katachi  { --scene-image: url("images/backgrounds/katachi.webp"); }
+body.zukan-page-iro      { --scene-image: url("images/backgrounds/iro.webp"); }
+body.zukan-page-kazu     { --scene-image: url("images/backgrounds/kazu.webp"); }
+body.zukan-page-kudamono { --scene-image: url("images/backgrounds/kudamono.webp"); }
+body.zukan-page-yasai    { --scene-image: url("images/backgrounds/yasai.webp"); }
+body.zukan-page-doubutsu { --scene-image: url("images/backgrounds/doubutsu.webp"); }
+body.zukan-page-norimono { --scene-image: url("images/backgrounds/norimono.webp"); }
+body.zukan-top { background-attachment: fixed; }
+body.zukan-scene header {
+  width: min(100%, 480px);
+  margin-inline: auto;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.62) 58%, rgba(255,255,255,0) 76%);
+}
+body.zukan-category nav { position: relative; z-index: 2; }
+body.zukan-scene main { position: relative; z-index: 1; }
+body.zukan-scene .card {
+  border: 2px solid rgba(255,255,255,0.76);
+  box-shadow: 0 5px 16px rgba(37,48,67,0.22);
+}
+body.zukan-category footer.bottom-nav {
+  position: relative;
+  z-index: 2;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.74), rgba(255,255,255,0) 70%);
+}
+@media (prefers-reduced-motion: reduce) {
+  body.zukan-top { background-attachment: scroll; }
 }
