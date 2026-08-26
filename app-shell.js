@@ -20,9 +20,6 @@
     capacitor.isNativePlatform() &&
     capacitor.getPlatform() === "android";
 
-  if (!isAndroidApp) return;
-
-  const App = capacitor.Plugins.App;
   const activeMedia = new Set();
   const nativePlay = HTMLMediaElement.prototype.play;
 
@@ -34,20 +31,41 @@
   document.querySelectorAll("audio, video").forEach((media) => activeMedia.add(media));
 
   let resumeBgm = false;
-  App.addListener("appStateChange", ({ isActive }) => {
+  function pauseForBackground() {
     const bgm = document.getElementById("bgm");
-    if (!isActive) {
-      resumeBgm = Boolean(bgm && !bgm.paused && !bgm.muted);
-      activeMedia.forEach((media) => {
-        if (!media.paused) media.pause();
-      });
-      return;
-    }
+    if (bgm && !bgm.paused && !bgm.muted) resumeBgm = true;
+    document.querySelector("#overlay.active")?.click();
+    const normalVolume = Number(bgm?.dataset.normalVolume);
+    if (bgm && Number.isFinite(normalVolume)) bgm.volume = normalVolume;
+    activeMedia.forEach((media) => {
+      if (!media.paused) media.pause();
+    });
+  }
 
+  function resumeAfterBackground() {
+    const bgm = document.getElementById("bgm");
     if (resumeBgm && bgm && !bgm.muted) {
       resumeBgm = false;
       nativePlay.call(bgm).catch(() => {});
     }
+  }
+
+  if (!isAndroidApp) {
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) pauseForBackground();
+      else resumeAfterBackground();
+    });
+    window.addEventListener("pagehide", pauseForBackground);
+    window.addEventListener("pageshow", () => {
+      if (!document.hidden) resumeAfterBackground();
+    });
+    return;
+  }
+
+  const App = capacitor.Plugins.App;
+  App.addListener("appStateChange", ({ isActive }) => {
+    if (isActive) resumeAfterBackground();
+    else pauseForBackground();
   });
 
   const exitButton = document.createElement("button");

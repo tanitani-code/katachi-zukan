@@ -316,6 +316,7 @@
   const BGM_NORMAL_VOLUME = 0.25;
   const BGM_DUCKED_VOLUME = 0.06;
   bgm.volume = BGM_NORMAL_VOLUME;
+  bgm.dataset.normalVolume = BGM_NORMAL_VOLUME;
   let bgmFadeFrame = 0;
   function fadeBgmTo(target, duration = 180) {
     cancelAnimationFrame(bgmFadeFrame);
