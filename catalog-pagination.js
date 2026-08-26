@@ -62,6 +62,15 @@
     return cards.slice(start, start + PAGE_SIZE);
   }
 
+  function hydrateCards(items) {
+    items.forEach((card) => {
+      card.querySelectorAll("[data-src]").forEach((asset) => {
+        asset.src = asset.dataset.src;
+        asset.removeAttribute("data-src");
+      });
+    });
+  }
+
   function announcePage(index) {
     const detail = {
       page: index,
@@ -79,6 +88,7 @@
 
     const direction = destination > currentPage ? "18px" : "-18px";
     currentPage = destination;
+    hydrateCards(pageCards(currentPage));
 
     cards.forEach((card, cardIndex) => {
       card.hidden = Math.floor(cardIndex / PAGE_SIZE) !== currentPage;
