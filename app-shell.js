@@ -46,6 +46,93 @@
 
   document.querySelectorAll("audio, video").forEach((media) => activeMedia.add(media));
 
+  if (isTop) {
+    const titleSounds = {
+      katachi: "sounds/title_katachi.mp3",
+      iro: "sounds/title_iro.mp3",
+      kazu: "sounds/title_kazu.mp3",
+      kudamono: "sounds/title_kudamono.mp3",
+      yasai: "sounds/title_yasai.mp3",
+      doubutsu: "sounds/title_doubutsu.mp3",
+      norimono: "sounds/title_norimono.mp3"
+    };
+    const titleAudioCache = new Map();
+    let currentTitleVoice = null;
+    let titleSession = 0;
+    let originalBgmVolume = null;
+    let navigating = false;
+
+    function getTitleAudio(src) {
+      if (!titleAudioCache.has(src)) {
+        const audio = new Audio(src);
+        audio.preload = "auto";
+        titleAudioCache.set(src, audio);
+        activeMedia.add(audio);
+      }
+      return titleAudioCache.get(src);
+    }
+
+    function playTitleVoice(src, onEnd, onStart) {
+      const mySession = ++titleSession;
+      if (currentTitleVoice) currentTitleVoice.pause();
+      const voice = getTitleAudio(src);
+      const bgm = document.getElementById("bgm");
+      if (bgm && originalBgmVolume === null) originalBgmVolume = bgm.volume;
+      if (bgm && !bgm.muted) bgm.volume = Math.min(bgm.volume, 0.06);
+      currentTitleVoice = voice;
+      voice.currentTime = 0;
+
+      let finished = false;
+      function finish() {
+        if (finished || mySession !== titleSession) return;
+        finished = true;
+        if (bgm && originalBgmVolume !== null) bgm.volume = originalBgmVolume;
+        originalBgmVolume = null;
+        currentTitleVoice = null;
+        onEnd?.();
+      }
+
+      voice.onended = finish;
+      voice.onerror = finish;
+      nativePlay.call(voice).then(() => onStart?.()).catch(finish);
+      setTimeout(finish, 3500);
+    }
+
+    Object.values(titleSounds).forEach(getTitleAudio);
+    getTitleAudio("sounds/title_top.mp3");
+
+    const introKey = "zukan-intro-played";
+    function tryIntro(event) {
+      if (sessionStorage.getItem(introKey) || event?.target?.closest?.(".card")) return;
+      playTitleVoice(
+        "sounds/title_top.mp3",
+        null,
+        () => sessionStorage.setItem(introKey, "1")
+      );
+    }
+
+    setTimeout(() => tryIntro(), 350);
+    document.addEventListener("pointerdown", tryIntro, { once: true, passive: true });
+
+    document.querySelectorAll(".card[data-cat]").forEach((card) => {
+      card.addEventListener("click", (event) => {
+        if (navigating) {
+          event.preventDefault();
+          return;
+        }
+        const category = card.dataset.cat;
+        const src = titleSounds[category];
+        if (!src) return;
+        event.preventDefault();
+        navigating = true;
+        sessionStorage.setItem(introKey, "1");
+        card.classList.add("category-announcing");
+        navigator.vibrate?.(35);
+        playTitleVoice(src, () => location.assign(card.href));
+      });
+    });
+  }
+
   let resumeBgm = false;
   function pauseForBackground() {
     const bgm = document.getElementById("bgm");
