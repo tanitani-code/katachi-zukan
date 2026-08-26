@@ -8,6 +8,17 @@
   document.documentElement.classList.add(`zukan-page-${pageName}`);
   document.body.classList.add("zukan-scene", `zukan-page-${pageName}`);
 
+  const heading = document.querySelector("header h1");
+  if (heading) {
+    const titleImage = document.createElement("img");
+    titleImage.className = "header-title-art";
+    titleImage.src = `images/headers/${pageName}.png`;
+    titleImage.alt = heading.textContent.trim();
+    heading.classList.add("has-title-art");
+    heading.textContent = "";
+    heading.appendChild(titleImage);
+  }
+
   if (!isTop) {
     const backButton = document.querySelector(".nav-back");
     const footer = document.querySelector("footer");

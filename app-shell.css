@@ -126,3 +126,27 @@ body.zukan-category footer.bottom-nav {
 @media (prefers-reduced-motion: reduce) {
   body.zukan-top { background-attachment: scroll; }
 }
+/* 絵本シリーズ共通の画像タイトル */
+body.zukan-scene header h1.has-title-art {
+  min-height: clamp(48px, 7.8dvh, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0;
+  line-height: 0;
+  text-shadow: none;
+}
+body.zukan-scene .header-title-art {
+  display: block;
+  width: auto;
+  max-width: min(94vw, 460px);
+  height: clamp(48px, 7.8dvh, 72px);
+  object-fit: contain;
+  filter: drop-shadow(0 3px 2px rgba(15, 62, 120, 0.18));
+}
+body.zukan-top header h1.has-title-art {
+  min-height: clamp(58px, 9dvh, 82px);
+}
+body.zukan-top .header-title-art {
+  height: clamp(58px, 9dvh, 82px);
+}
