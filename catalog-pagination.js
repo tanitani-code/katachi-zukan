@@ -1,5 +1,5 @@
 (() => {
-  const PAGE_SIZE = 6;
+  const PAGE_SIZE = document.body.classList.contains("zukan-page-kazu") ? 10 : 6;
   const main = document.querySelector("main");
   const footer = document.querySelector("footer.bottom-nav");
   if (!main || !footer || !document.body.classList.contains("zukan-category")) return;

@@ -22,15 +22,27 @@
     backControl.setAttribute("aria-label", "トップへ戻る");
   }
 
-  const bgmControl = document.querySelector(".bgm-toggle");
+  const oldBgmControl = document.querySelector(".bgm-toggle");
+  const bgmControl = oldBgmControl?.cloneNode(true) || null;
+  if (oldBgmControl && bgmControl) oldBgmControl.replaceWith(bgmControl);
+
   function paintBgmControl() {
     if (!bgmControl) return;
     const bgm = document.getElementById("bgm");
+    const muted = Boolean(bgm?.muted);
     bgmControl.classList.add("illustrated-control", "illustrated-bgm");
-    bgmControl.innerHTML = bgm?.muted ? controlIcons.soundOff : controlIcons.soundOn;
+    bgmControl.innerHTML = muted ? controlIcons.soundOff : controlIcons.soundOn;
+    bgmControl.setAttribute("aria-pressed", String(muted));
+    bgmControl.setAttribute("aria-label", muted ? "BGMをつける" : "BGMを消す");
   }
   paintBgmControl();
-  bgmControl?.addEventListener("click", () => requestAnimationFrame(paintBgmControl));
+  bgmControl?.addEventListener("click", () => {
+    const bgm = document.getElementById("bgm");
+    if (!bgm) return;
+    bgm.muted = !bgm.muted;
+    if (!bgm.muted) bgm.play().catch(() => {});
+    paintBgmControl();
+  });
 
   const heading = document.querySelector("header h1");
   if (heading) {
@@ -127,7 +139,7 @@
 
     const introKey = "zukan-intro-played";
     function tryIntro(event) {
-      if (sessionStorage.getItem(introKey) || event?.target?.closest?.(".card")) return;
+      if (sessionStorage.getItem(introKey) || event?.target?.closest?.(".card, button, a")) return;
       playTitleVoice(
         "sounds/title_top.mp3",
         null,
