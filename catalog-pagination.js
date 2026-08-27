@@ -86,7 +86,7 @@
     document.dispatchEvent(new CustomEvent("zukan-page-change", { detail }));
   }
 
-  function showPage(index, playSound = false) {
+  function showPage(index, playSound = false, animateCards = true) {
     const destination = ((index % pageCount) + pageCount) % pageCount;
     if (destination === currentPage && cards.some((card) => !card.hidden)) return false;
     if (playSound) window.ZukanFX?.playTapSound?.();
@@ -112,10 +112,12 @@
     document.body.dataset.catalogPage = String(currentPage + 1);
     main.style.setProperty("--page-direction", direction);
     main.classList.remove("page-changing");
-    void main.offsetWidth;
-    main.classList.add("page-changing");
     clearTimeout(animationTimer);
-    animationTimer = window.setTimeout(() => main.classList.remove("page-changing"), 200);
+    if (animateCards) {
+      void main.offsetWidth;
+      main.classList.add("page-changing");
+      animationTimer = window.setTimeout(() => main.classList.remove("page-changing"), 200);
+    }
 
     announcePage(currentPage);
     return true;
@@ -220,11 +222,13 @@
     main.style.transition = "transform 190ms cubic-bezier(.22,.75,.3,1)";
     main.style.transform = `translate3d(${-direction * main.clientWidth}px, 0, 0)`;
     window.setTimeout(() => {
-      main.style.removeProperty("transition");
-      main.style.removeProperty("transform");
+      // 旧ページを中央へ戻す前に、新ページを画面外で確定してちらつきを防ぐ。
+      main.style.transition = "none";
+      showPage(currentPage + direction, true, false);
       removeDragPreview();
+      main.style.removeProperty("transform");
+      main.style.removeProperty("transition");
       dragging = false;
-      showPage(currentPage + direction, true);
     }, 195);
   }, { passive: true });
 
