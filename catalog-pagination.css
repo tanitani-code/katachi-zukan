@@ -93,3 +93,35 @@ body.zukan-category footer.bottom-nav.paginated {
     animation: none;
   }
 }
+
+/* 絵本の木製矢印看板 */
+.catalog-page-arrow {
+  width: clamp(54px, 14vw, 62px);
+  height: clamp(50px, 13vw, 58px);
+  padding: 4px;
+  border: 3px solid #fff;
+  outline: 2px solid #70421f;
+  border-radius: 44% 54% 46% 52% / 53% 45% 55% 47%;
+  box-shadow: 0 5px 0 #70421f, 0 7px 12px rgba(63,34,13,0.24);
+}
+.catalog-page-previous {
+  background: linear-gradient(155deg, #58b6ef, #1976c9);
+  transform: rotate(-2deg);
+}
+.catalog-page-next {
+  background: linear-gradient(155deg, #ffb33e, #ef6c00);
+  transform: rotate(2deg);
+}
+.catalog-page-arrow svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.catalog-page-arrow .arrow-board { fill: #fff; stroke: #5b371c; stroke-width: 2.5; stroke-linejoin: round; }
+.catalog-page-arrow .arrow-grain { fill: none; stroke: rgba(92,55,26,0.38); stroke-width: 2.5; stroke-linecap: round; }
+.catalog-page-previous:active:not(:disabled) { transform: translateY(4px) rotate(-2deg) scale(0.94); box-shadow: 0 1px 0 #70421f; }
+.catalog-page-next:active:not(:disabled) { transform: translateY(4px) rotate(2deg) scale(0.94); box-shadow: 0 1px 0 #70421f; }
+.catalog-page-arrow:disabled { opacity: 0.24; filter: grayscale(0.75); box-shadow: 0 2px 0 #8d7968; }
+.catalog-page-dot::after {
+  inset: 3px;
+  border: 2px solid #fff;
+  background: #7fc4ee;
+  box-shadow: 0 1px 0 #315c80;
+}
+.catalog-page-dot.active::after { background: #ff9f1c; transform: scale(1.35); }

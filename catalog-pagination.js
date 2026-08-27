@@ -22,13 +22,13 @@
   const previousButton = document.createElement("button");
   previousButton.type = "button";
   previousButton.className = "catalog-page-arrow catalog-page-previous";
-  previousButton.textContent = "‹";
+  previousButton.innerHTML = `<svg viewBox="0 0 64 64" aria-hidden="true"><path class="arrow-board" d="M51 12L20 32l31 20V42L35 32l16-10z"/><path class="arrow-grain" d="M43 24L31 32l12 8"/></svg>`;
   previousButton.setAttribute("aria-label", "前のページ");
 
   const nextButton = document.createElement("button");
   nextButton.type = "button";
   nextButton.className = "catalog-page-arrow catalog-page-next";
-  nextButton.textContent = "›";
+  nextButton.innerHTML = `<svg viewBox="0 0 64 64" aria-hidden="true"><path class="arrow-board" d="M13 12l31 20-31 20V42l16-10-16-10z"/><path class="arrow-grain" d="M21 24l12 8-12 8"/></svg>`;
   nextButton.setAttribute("aria-label", "次のページ");
 
   const center = document.createElement("div");

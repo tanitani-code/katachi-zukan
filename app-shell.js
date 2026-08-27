@@ -8,6 +8,30 @@
   document.documentElement.classList.add(`zukan-page-${pageName}`);
   document.body.classList.add("zukan-scene", `zukan-page-${pageName}`);
 
+  const controlIcons = {
+    back: `<svg viewBox="0 0 64 64" aria-hidden="true"><path class="icon-sketch" d="M18 17c9 9 18 20 29 31M47 16C38 26 28 38 17 48"/></svg>`,
+    soundOn: `<svg viewBox="0 0 64 64" aria-hidden="true"><path class="icon-fill" d="M14 27h10l13-11v32L24 38H14z"/><path class="icon-sketch" d="M43 25c5 4 5 10 0 14M49 19c10 8 10 19 0 27"/></svg>`,
+    soundOff: `<svg viewBox="0 0 64 64" aria-hidden="true"><path class="icon-fill" d="M14 27h10l13-11v32L24 38H14z"/><path class="icon-sketch" d="M44 25l13 14M57 25L44 39"/></svg>`,
+    exit: `<svg viewBox="0 0 64 64" aria-hidden="true"><path class="door" d="M17 10h29v44H17z"/><circle class="knob" cx="39" cy="33" r="3"/><path class="icon-sketch" d="M10 32h18M21 24l8 8-8 8"/></svg>`
+  };
+
+  const backControl = document.querySelector(".nav-back");
+  if (backControl) {
+    backControl.classList.add("illustrated-control", "illustrated-back");
+    backControl.innerHTML = controlIcons.back;
+    backControl.setAttribute("aria-label", "トップへ戻る");
+  }
+
+  const bgmControl = document.querySelector(".bgm-toggle");
+  function paintBgmControl() {
+    if (!bgmControl) return;
+    const bgm = document.getElementById("bgm");
+    bgmControl.classList.add("illustrated-control", "illustrated-bgm");
+    bgmControl.innerHTML = bgm?.muted ? controlIcons.soundOff : controlIcons.soundOn;
+  }
+  paintBgmControl();
+  bgmControl?.addEventListener("click", () => requestAnimationFrame(paintBgmControl));
+
   const heading = document.querySelector("header h1");
   if (heading) {
     const titleImage = document.createElement("img");
@@ -174,7 +198,8 @@
   const exitButton = document.createElement("button");
   exitButton.type = "button";
   exitButton.className = "app-exit-button";
-  exitButton.textContent = "おわる";
+  exitButton.classList.add("illustrated-control", "illustrated-exit");
+  exitButton.innerHTML = `${controlIcons.exit}<span>おわる</span>`;
   exitButton.setAttribute("aria-label", "アプリを終了");
 
   if (isTop) {
@@ -190,14 +215,14 @@
   async function exitApp() {
     if (exiting) return;
     exiting = true;
-    exitButton.textContent = "またね";
+    exitButton.querySelector("span").textContent = "またね";
     navigator.vibrate?.([80, 45, 80]);
     activeMedia.forEach((media) => media.pause());
     try {
       await App.exitApp();
     } catch {
       exiting = false;
-      exitButton.textContent = "おわる";
+      exitButton.querySelector("span").textContent = "おわる";
     }
   }
 
