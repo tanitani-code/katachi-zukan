@@ -57,6 +57,8 @@
   let currentPage = 0;
   let animationTimer = 0;
   let pointerStart = null;
+  let dragPreview = null;
+  let dragging = false;
   let suppressClickUntil = 0;
 
   function pageCards(index) {
@@ -122,27 +124,113 @@
   previousButton.addEventListener("click", () => showPage(currentPage - 1, true));
   nextButton.addEventListener("click", () => showPage(currentPage + 1, true));
 
+  function removeDragPreview() {
+    dragPreview?.remove();
+    dragPreview = null;
+  }
+
+  function createDragPreview(direction) {
+    removeDragPreview();
+    const destination = ((currentPage + direction) % pageCount + pageCount) % pageCount;
+    hydrateCards(pageCards(destination));
+    const styles = getComputedStyle(main);
+    dragPreview = document.createElement("div");
+    dragPreview.className = "catalog-drag-preview";
+    dragPreview.setAttribute("aria-hidden", "true");
+    Object.assign(dragPreview.style, {
+      position: "absolute",
+      inset: "0",
+      display: "grid",
+      gridTemplateColumns: styles.gridTemplateColumns,
+      gridTemplateRows: styles.gridTemplateRows,
+      gap: styles.gap,
+      padding: styles.padding,
+      pointerEvents: "none",
+      transform: `translate3d(${direction * main.clientWidth}px, 0, 0)`
+    });
+    pageCards(destination).forEach((card) => {
+      const clone = card.cloneNode(true);
+      clone.hidden = false;
+      clone.removeAttribute("id");
+      clone.querySelectorAll("[id]").forEach((element) => element.removeAttribute("id"));
+      dragPreview.appendChild(clone);
+    });
+    main.appendChild(dragPreview);
+  }
+
+  function resetDragVisual(animate = true) {
+    main.style.transition = animate ? "transform 170ms cubic-bezier(.22,.75,.3,1)" : "none";
+    main.style.transform = "translate3d(0, 0, 0)";
+    window.setTimeout(() => {
+      main.style.removeProperty("transition");
+      main.style.removeProperty("transform");
+      removeDragPreview();
+      dragging = false;
+    }, animate ? 180 : 0);
+  }
+
   main.addEventListener("pointerdown", (event) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
     if (document.querySelector("#overlay.active")) return;
-    pointerStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    pointerStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, direction: 0 };
+    dragging = false;
     try { main.setPointerCapture(event.pointerId); } catch (_) {}
   }, { passive: true });
 
-  main.addEventListener("pointerup", (event) => {
-    if (!pointerStart) return;
+  main.addEventListener("pointermove", (event) => {
+    if (!pointerStart || event.pointerId !== pointerStart.pointerId) return;
     const deltaX = event.clientX - pointerStart.x;
     const deltaY = event.clientY - pointerStart.y;
+    if (!dragging) {
+      if (Math.abs(deltaX) < 8 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+      dragging = true;
+      suppressClickUntil = performance.now() + 500;
+      main.classList.remove("page-changing");
+    }
+    const direction = deltaX < 0 ? 1 : -1;
+    if (direction !== pointerStart.direction) {
+      pointerStart.direction = direction;
+      createDragPreview(direction);
+    }
+    event.preventDefault();
+    main.style.transition = "none";
+    main.style.transform = `translate3d(${deltaX}px, 0, 0)`;
+  }, { passive: false });
+
+  main.addEventListener("pointerup", (event) => {
+    if (!pointerStart || event.pointerId !== pointerStart.pointerId) return;
+    const deltaX = event.clientX - pointerStart.x;
+    const deltaY = event.clientY - pointerStart.y;
+    const wasDragging = dragging;
     pointerStart = null;
 
-    if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
-    suppressClickUntil = performance.now() + 350;
-    if (deltaX < 0) showPage(currentPage + 1, true);
-    else showPage(currentPage - 1, true);
+    if (!wasDragging || Math.abs(deltaX) < Math.abs(deltaY) * 1.1) {
+      resetDragVisual(wasDragging);
+      return;
+    }
+
+    suppressClickUntil = performance.now() + 400;
+    const switchPage = Math.abs(deltaX) >= Math.min(72, main.clientWidth * 0.2);
+    if (!switchPage) {
+      resetDragVisual(true);
+      return;
+    }
+
+    const direction = deltaX < 0 ? 1 : -1;
+    main.style.transition = "transform 190ms cubic-bezier(.22,.75,.3,1)";
+    main.style.transform = `translate3d(${-direction * main.clientWidth}px, 0, 0)`;
+    window.setTimeout(() => {
+      main.style.removeProperty("transition");
+      main.style.removeProperty("transform");
+      removeDragPreview();
+      dragging = false;
+      showPage(currentPage + direction, true);
+    }, 195);
   }, { passive: true });
 
   main.addEventListener("pointercancel", () => {
     pointerStart = null;
+    resetDragVisual(dragging);
   }, { passive: true });
 
   main.addEventListener("click", (event) => {
