@@ -17,6 +17,8 @@
   }
 
   footer.classList.add("paginated");
+  // Android WebViewに横方向の指操作を奪わせず、縦方向だけをブラウザへ委ねる。
+  main.style.touchAction = "pan-y";
 
   const backButton = footer.querySelector(".nav-back");
   const previousButton = document.createElement("button");
@@ -123,7 +125,8 @@
   main.addEventListener("pointerdown", (event) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
     if (document.querySelector("#overlay.active")) return;
-    pointerStart = { x: event.clientX, y: event.clientY };
+    pointerStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    try { main.setPointerCapture(event.pointerId); } catch (_) {}
   }, { passive: true });
 
   main.addEventListener("pointerup", (event) => {

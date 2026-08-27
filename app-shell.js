@@ -22,6 +22,12 @@
     backControl.setAttribute("aria-label", "トップへ戻る");
   }
 
+  const BGM_MUTED_KEY = "hajimete-zukan-bgm-muted";
+  const bgmElement = document.getElementById("bgm");
+  try {
+    if (bgmElement) bgmElement.muted = localStorage.getItem(BGM_MUTED_KEY) === "true";
+  } catch (_) {}
+
   const oldBgmControl = document.querySelector(".bgm-toggle");
   const bgmControl = oldBgmControl?.cloneNode(true) || null;
   if (oldBgmControl && bgmControl) oldBgmControl.replaceWith(bgmControl);
@@ -40,6 +46,7 @@
     const bgm = document.getElementById("bgm");
     if (!bgm) return;
     bgm.muted = !bgm.muted;
+    try { localStorage.setItem(BGM_MUTED_KEY, String(bgm.muted)); } catch (_) {}
     if (!bgm.muted) bgm.play().catch(() => {});
     paintBgmControl();
   });
