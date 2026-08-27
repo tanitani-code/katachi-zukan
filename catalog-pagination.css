@@ -125,3 +125,23 @@ body.zukan-category footer.bottom-nav.paginated {
   box-shadow: 0 1px 0 #315c80;
 }
 .catalog-page-dot.active::after { background: #ff9f1c; transform: scale(1.35); }
+/* 幼児にも見やすい大きなページ位置 */
+.catalog-page-dots {
+  min-height: 26px;
+  gap: 8px;
+}
+.catalog-page-dot {
+  width: 24px;
+  height: 24px;
+}
+.catalog-page-dot::after {
+  inset: 2px;
+  background: #61b5e8;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 0 #315c80, 0 2px 6px rgba(23,71,110,0.25);
+}
+.catalog-page-dot.active::after {
+  background: #ef3e36;
+  box-shadow: 0 2px 0 #9d1d19, 0 2px 8px rgba(157,29,25,0.32);
+  transform: scale(1.22);
+}

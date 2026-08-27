@@ -187,5 +187,5 @@
     });
   }
 
-  window.ZukanFX = { tap, burst, getVariant, setVariant, initToggle, getAccentColor };
+  window.ZukanFX = { tap, burst, playTapSound, getVariant, setVariant, initToggle, getAccentColor };
 })();

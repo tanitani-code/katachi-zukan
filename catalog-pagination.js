@@ -43,7 +43,7 @@
     dot.type = "button";
     dot.className = "catalog-page-dot";
     dot.setAttribute("aria-label", `${index + 1}ページ目`);
-    dot.addEventListener("click", () => showPage(index));
+    dot.addEventListener("click", () => showPage(index, true));
     dots.appendChild(dot);
     return dot;
   });
@@ -82,11 +82,14 @@
     document.dispatchEvent(new CustomEvent("zukan-page-change", { detail }));
   }
 
-  function showPage(index) {
-    const destination = Math.max(0, Math.min(pageCount - 1, index));
+  function showPage(index, playSound = false) {
+    const destination = ((index % pageCount) + pageCount) % pageCount;
     if (destination === currentPage && cards.some((card) => !card.hidden)) return false;
+    if (playSound) window.ZukanFX?.playTapSound?.();
 
-    const direction = destination > currentPage ? "18px" : "-18px";
+    const wrappedForward = currentPage === pageCount - 1 && destination === 0;
+    const wrappedBackward = currentPage === 0 && destination === pageCount - 1;
+    const direction = wrappedForward ? "18px" : wrappedBackward ? "-18px" : destination > currentPage ? "18px" : "-18px";
     currentPage = destination;
     hydrateCards(pageCards(currentPage));
 
@@ -94,8 +97,8 @@
       card.hidden = Math.floor(cardIndex / PAGE_SIZE) !== currentPage;
     });
 
-    previousButton.disabled = currentPage === 0;
-    nextButton.disabled = currentPage === pageCount - 1;
+    previousButton.disabled = false;
+    nextButton.disabled = false;
     dotButtons.forEach((dot, dotIndex) => {
       const active = dotIndex === currentPage;
       dot.classList.toggle("active", active);
@@ -114,8 +117,8 @@
     return true;
   }
 
-  previousButton.addEventListener("click", () => showPage(currentPage - 1));
-  nextButton.addEventListener("click", () => showPage(currentPage + 1));
+  previousButton.addEventListener("click", () => showPage(currentPage - 1, true));
+  nextButton.addEventListener("click", () => showPage(currentPage + 1, true));
 
   main.addEventListener("pointerdown", (event) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -131,8 +134,8 @@
 
     if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
     suppressClickUntil = performance.now() + 350;
-    if (deltaX < 0) showPage(currentPage + 1);
-    else showPage(currentPage - 1);
+    if (deltaX < 0) showPage(currentPage + 1, true);
+    else showPage(currentPage - 1, true);
   }, { passive: true });
 
   main.addEventListener("pointercancel", () => {
@@ -147,8 +150,8 @@
   }, true);
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") showPage(currentPage - 1);
-    if (event.key === "ArrowRight") showPage(currentPage + 1);
+    if (event.key === "ArrowLeft") showPage(currentPage - 1, true);
+    if (event.key === "ArrowRight") showPage(currentPage + 1, true);
   });
 
   window.ZukanPagination = {
