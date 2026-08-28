@@ -176,7 +176,6 @@
     if (document.querySelector("#overlay.active")) return;
     pointerStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, direction: 0 };
     dragging = false;
-    try { main.setPointerCapture(event.pointerId); } catch (_) {}
   }, { passive: true });
 
   main.addEventListener("pointermove", (event) => {
@@ -186,6 +185,9 @@
     if (!dragging) {
       if (Math.abs(deltaX) < 8 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
       dragging = true;
+      // Capture only after horizontal dragging starts. Capturing on pointerdown
+      // retargets an ordinary card click to main, so the card never opens.
+      try { main.setPointerCapture(event.pointerId); } catch (_) {}
       suppressClickUntil = performance.now() + 500;
       main.classList.remove("page-changing");
     }

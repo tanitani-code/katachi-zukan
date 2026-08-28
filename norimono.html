@@ -114,6 +114,8 @@
 
     /* 名前ラベル：下部に半透明オーバーレイ */
     .label {
+      background: rgba(255, 255, 255, 0.90);
+      color: #263238;
       position: absolute;
       bottom: 0;
       left: 0;
@@ -205,12 +207,36 @@
 </header>
 
 <main>
-  <div class="card" data-vehicle="densha" data-sound="sounds/densha.mp3" data-label="でんしゃ"><img class="card-img" src="images/vehicles/densha.webp" alt="でんしゃ"><span class="label">でんしゃ</span></div>
-  <div class="card" data-vehicle="shoubousha" data-sound="sounds/shoubousha.mp3" data-label="しょうぼうしゃ"><img class="card-img" src="images/vehicles/shoubousha.webp" alt="しょうぼうしゃ"><span class="label">しょうぼうしゃ</span></div>
-  <div class="card" data-vehicle="kyuukyuusha" data-sound="sounds/kyuukyuusha.mp3" data-label="きゅうきゅうしゃ"><img class="card-img" src="images/vehicles/kyuukyuusha.webp" alt="きゅうきゅうしゃ"><span class="label">きゅうきゅうしゃ</span></div>
-  <div class="card" data-vehicle="patocar" data-sound="sounds/patocar.mp3" data-label="パトカー"><img class="card-img" src="images/vehicles/patocar.webp" alt="パトカー"><span class="label">パトカー</span></div>
+  <div class="card" data-vehicle="densha" data-sound="sounds/densha.mp3" data-se="sounds/vehicles/densha.mp3" data-label="でんしゃ"><img class="card-img" src="images/vehicles/densha.webp" alt="でんしゃ"><span class="vehicle-sound-mark" aria-label="効果音あり">🔊</span><span class="label">でんしゃ</span></div>
+  <div class="card" data-vehicle="shoubousha" data-sound="sounds/shoubousha.mp3" data-se="sounds/vehicles/shoubousha.mp3" data-label="しょうぼうしゃ"><img class="card-img" src="images/vehicles/shoubousha.webp" alt="しょうぼうしゃ"><span class="vehicle-sound-mark" aria-label="効果音あり">🔊</span><span class="label">しょうぼうしゃ</span></div>
+  <div class="card" data-vehicle="kyuukyuusha" data-sound="sounds/kyuukyuusha.mp3" data-se="sounds/vehicles/kyuukyuusha.mp3" data-label="きゅうきゅうしゃ"><img class="card-img" src="images/vehicles/kyuukyuusha.webp" alt="きゅうきゅうしゃ"><span class="vehicle-sound-mark" aria-label="効果音あり">🔊</span><span class="label">きゅうきゅうしゃ</span></div>
+  <div class="card" data-vehicle="patocar" data-sound="sounds/patocar.mp3" data-se="sounds/vehicles/patocar.mp3" data-label="パトカー"><img class="card-img" src="images/vehicles/patocar.webp" alt="パトカー"><span class="vehicle-sound-mark" aria-label="効果音あり">🔊</span><span class="label">パトカー</span></div>
   <div class="card" data-vehicle="bus" data-sound="sounds/bus.mp3" data-label="バス"><img class="card-img" src="images/vehicles/bus.webp" alt="バス"><span class="label">バス</span></div>
-  <div class="card" data-vehicle="hikouki" data-sound="sounds/hikouki.mp3" data-label="ひこうき"><img class="card-img" src="images/vehicles/hikouki.webp" alt="ひこうき"><span class="label">ひこうき</span></div>
+  <div class="card" data-vehicle="hikouki" data-sound="sounds/hikouki.mp3" data-se="sounds/vehicles/hikouki.mp3?v=airport1-20260828" data-label="ひこうき"><img class="card-img" src="images/vehicles/hikouki.webp" alt="ひこうき"><span class="vehicle-sound-mark" aria-label="効果音あり">🔊</span><span class="label">ひこうき</span></div>
+  <div class="card" data-vehicle="shinkansen" data-sound="sounds/shinkansen.mp3" data-label="しんかんせん" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vehicles/shinkansen.webp" alt="しんかんせん" decoding="async">
+    <span class="label">しんかんせん</span>
+  </div>
+  <div class="card" data-vehicle="taxi" data-sound="sounds/taxi.mp3" data-label="タクシー" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vehicles/taxi.webp" alt="タクシー" decoding="async">
+    <span class="label">タクシー</span>
+  </div>
+  <div class="card" data-vehicle="truck" data-sound="sounds/truck.mp3" data-label="トラック" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vehicles/truck.webp" alt="トラック" decoding="async">
+    <span class="label">トラック</span>
+  </div>
+  <div class="card" data-vehicle="shovelcar" data-sound="sounds/shovelcar.mp3" data-label="ショベルカー" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vehicles/shovelcar.webp" alt="ショベルカー" decoding="async">
+    <span class="label">ショベルカー</span>
+  </div>
+  <div class="card" data-vehicle="fune" data-sound="sounds/fune.mp3" data-label="ふね" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vehicles/fune.webp" alt="ふね" decoding="async">
+    <span class="label">ふね</span>
+  </div>
+  <div class="card" data-vehicle="helicopter" data-sound="sounds/helicopter.mp3" data-label="ヘリコプター" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vehicles/helicopter.webp" alt="ヘリコプター" decoding="async">
+    <span class="label">ヘリコプター</span>
+  </div>
 </main>
 
 <footer></footer>
@@ -221,98 +247,13 @@
   <span id="overlay-label"></span>
 </div>
 
-<script>
-  // ===== BGM =====
-  const bgm = document.getElementById('bgm');
-  const bgmToggle = document.getElementById('bgmToggle');
-  bgm.volume = 0.25;
-  function tryPlayBgm() { bgm.play().catch(() => {}); }
-  tryPlayBgm();
-  document.addEventListener('click', tryPlayBgm, { once: true });
-  document.addEventListener('touchstart', tryPlayBgm, { once: true });
-  bgmToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    bgm.muted = !bgm.muted;
-    bgmToggle.textContent = bgm.muted ? '🔇' : '🔊';
-  });
-  ZukanFX.initToggle(document.getElementById('fxToggle'));
-
-  const audioCache = {};
-  function getAudio(src) {
-    if (!audioCache[src]) {
-      const a = new Audio(src);
-      a.preload = 'auto';
-      audioCache[src] = a;
-    }
-    return audioCache[src];
-  }
-
-  // 先読み
-  document.querySelectorAll('.card').forEach(card => {
-    if (card.dataset.sound) getAudio(card.dataset.sound);
-  });
-
-  const overlay     = document.getElementById('overlay');
-  const overlayImg  = document.getElementById('overlay-img');
-  const overlayLbl  = document.getElementById('overlay-label');
-
-  let isOpen = false;
-  let session = 0;  // タイマー無効化用：closeのたびにインクリメント
-
-  function closeOverlay() {
-    session++;  // 進行中のタイマーをすべて無効化
-    overlay.classList.remove('active');
-    isOpen = false;
-  }
-
-  function openOverlay(card) {
-    if (isOpen) return;
-    isOpen = true;
-    const mySession = ++session;
-
-    const img   = card.querySelector('.card-img');
-    const label = card.dataset.label;
-    const sound = card.dataset.sound;
-
-    // 画像・ラベルをセット（アニメーションリセット）
-    overlayImg.style.animation = 'none';
-    overlayImg.offsetHeight;  // reflow
-    overlayImg.style.animation = '';
-    overlayImg.src = img.src;
-    overlayImg.alt = img.alt;
-    overlayLbl.textContent = label;
-
-    overlay.classList.add('active');
-    ZukanFX.burst(overlay, card);
-
-    // 音声再生 → 終了後2秒で閉じる
-    const audio = getAudio(sound);
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-
-    audio.onended = () => {
-      if (session !== mySession) return;
-      setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
-    };
-
-    // フォールバック（音声が鳴らない場合）
-    setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
-  }
-
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      ZukanFX.tap(card);
-      openOverlay(card);
-    });
-  });
-
-  // オーバーレイタップで即閉じ
-  overlay.addEventListener('click', closeOverlay);
-
-  document.addEventListener('touchstart', () => {}, { passive: true });
-</script>
+<style>
+  .vehicle-sound-mark { position:absolute; top:8px; right:8px; background:#fff; border-radius:50%; padding:4px; font-size:18px; pointer-events:none; }
+</style>
+<script src="vehicle-playback.js"></script>
+<script src="catalog-image-page.js?v=20260827-tap2"></script>
 
 <script src="app-shell.js"></script>
-<script src="catalog-pagination.js"></script>
+<script src="catalog-pagination.js?v=20260827-tap2"></script>
 </body>
 </html>

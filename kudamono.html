@@ -105,6 +105,8 @@
     }
 
     .label {
+      background: rgba(255, 255, 255, 0.90);
+      color: #263238;
       position: absolute;
       bottom: 0; left: 0; right: 0;
       padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
@@ -223,6 +225,30 @@
     <img class="card-img" src="images/fruits/mikan.webp" alt="みかん">
     <span class="label">みかん</span>
   </div>
+  <div class="card" data-fruit="momo" data-sound="sounds/momo.mp3" data-label="もも" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/fruits/momo.webp" alt="もも" decoding="async">
+    <span class="label">もも</span>
+  </div>
+  <div class="card" data-fruit="melon" data-sound="sounds/melon.mp3" data-label="メロン" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/fruits/melon.webp" alt="メロン" decoding="async">
+    <span class="label">メロン</span>
+  </div>
+  <div class="card" data-fruit="pineapple" data-sound="sounds/pineapple.mp3" data-label="パイナップル" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/fruits/pineapple.webp" alt="パイナップル" decoding="async">
+    <span class="label">パイナップル</span>
+  </div>
+  <div class="card" data-fruit="kiwi" data-sound="sounds/kiwi.mp3" data-label="キウイ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/fruits/kiwi.webp" alt="キウイ" decoding="async">
+    <span class="label">キウイ</span>
+  </div>
+  <div class="card" data-fruit="nashi" data-sound="sounds/nashi.mp3" data-label="なし" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/fruits/nashi.webp" alt="なし" decoding="async">
+    <span class="label">なし</span>
+  </div>
+  <div class="card" data-fruit="sakuranbo" data-sound="sounds/sakuranbo.mp3" data-label="さくらんぼ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/fruits/sakuranbo.webp" alt="さくらんぼ" decoding="async">
+    <span class="label">さくらんぼ</span>
+  </div>
 </main>
 
 <footer></footer>
@@ -232,76 +258,10 @@
   <span id="overlay-label"></span>
 </div>
 
-<script>
-  // ===== BGM =====
-  const bgm = document.getElementById('bgm');
-  const bgmToggle = document.getElementById('bgmToggle');
-  bgm.volume = 0.25;
-  function tryPlayBgm() { bgm.play().catch(() => {}); }
-  tryPlayBgm();
-  document.addEventListener('click', tryPlayBgm, { once: true });
-  document.addEventListener('touchstart', tryPlayBgm, { once: true });
-  bgmToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    bgm.muted = !bgm.muted;
-    bgmToggle.textContent = bgm.muted ? '🔇' : '🔊';
-  });
-  ZukanFX.initToggle(document.getElementById('fxToggle'));
-
-  const audioCache = {};
-  function getAudio(src) {
-    if (!audioCache[src]) { const a = new Audio(src); a.preload = 'auto'; audioCache[src] = a; }
-    return audioCache[src];
-  }
-  document.querySelectorAll('.card').forEach(card => { if (card.dataset.sound) getAudio(card.dataset.sound); });
-
-  const overlay    = document.getElementById('overlay');
-  const overlayImg = document.getElementById('overlay-img');
-  const overlayLbl = document.getElementById('overlay-label');
-  let isOpen = false, session = 0;
-
-  function closeOverlay() {
-    session++;
-    overlay.classList.remove('active');
-    isOpen = false;
-  }
-
-  function openOverlay(card) {
-    if (isOpen) return;
-    isOpen = true;
-    const mySession = ++session;
-
-    const img = card.querySelector('.card-img');
-    overlayImg.style.animation = 'none';
-    overlayImg.offsetHeight;
-    overlayImg.style.animation = '';
-    overlayImg.src = img.src;
-    overlayImg.alt = img.alt;
-    overlayLbl.textContent = card.dataset.label;
-    overlay.classList.add('active');
-    ZukanFX.burst(overlay, card);
-
-    const audio = getAudio(card.dataset.sound);
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-    audio.onended = () => {
-      if (session !== mySession) return;
-      setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
-    };
-    setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
-  }
-
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      ZukanFX.tap(card);
-      openOverlay(card);
-    });
-  });
-  overlay.addEventListener('click', closeOverlay);
-  document.addEventListener('touchstart', () => {}, { passive: true });
-</script>
+<script src="vehicle-playback.js"></script>
+<script src="catalog-image-page.js?v=20260827-tap2"></script>
 
 <script src="app-shell.js"></script>
-<script src="catalog-pagination.js"></script>
+<script src="catalog-pagination.js?v=20260827-tap2"></script>
 </body>
 </html>

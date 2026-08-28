@@ -114,6 +114,8 @@
 
     /* 名前ラベル：下部に半透明オーバーレイ */
     .label {
+      background: rgba(255, 255, 255, 0.90);
+      color: #263238;
       position: absolute;
       bottom: 0;
       left: 0;
@@ -240,6 +242,30 @@
     <img class="card-img" src="images/vegetables/toumorokoshi.webp" alt="とうもろこし">
     <span class="label">とうもろこし</span>
   </div>
+  <div class="card" data-veg="jagaimo" data-sound="sounds/jagaimo.mp3" data-label="じゃがいも" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vegetables/jagaimo.webp" alt="じゃがいも" decoding="async">
+    <span class="label">じゃがいも</span>
+  </div>
+  <div class="card" data-veg="satsumaimo" data-sound="sounds/satsumaimo.mp3" data-label="さつまいも" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vegetables/satsumaimo.webp" alt="さつまいも" decoding="async">
+    <span class="label">さつまいも</span>
+  </div>
+  <div class="card" data-veg="kabocha" data-sound="sounds/kabocha.mp3" data-label="かぼちゃ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vegetables/kabocha.webp" alt="かぼちゃ" decoding="async">
+    <span class="label">かぼちゃ</span>
+  </div>
+  <div class="card" data-veg="nasu" data-sound="sounds/nasu.mp3" data-label="なす" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vegetables/nasu.webp" alt="なす" decoding="async">
+    <span class="label">なす</span>
+  </div>
+  <div class="card" data-veg="piman" data-sound="sounds/piman.mp3" data-label="ピーマン" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vegetables/piman.webp" alt="ピーマン" decoding="async">
+    <span class="label">ピーマン</span>
+  </div>
+  <div class="card" data-veg="daikon" data-sound="sounds/daikon.mp3" data-label="だいこん" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="images/vegetables/daikon.webp" alt="だいこん" decoding="async">
+    <span class="label">だいこん</span>
+  </div>
 </main>
 
 <footer></footer>
@@ -250,98 +276,10 @@
   <span id="overlay-label"></span>
 </div>
 
-<script>
-  // ===== BGM =====
-  const bgm = document.getElementById('bgm');
-  const bgmToggle = document.getElementById('bgmToggle');
-  bgm.volume = 0.25;
-  function tryPlayBgm() { bgm.play().catch(() => {}); }
-  tryPlayBgm();
-  document.addEventListener('click', tryPlayBgm, { once: true });
-  document.addEventListener('touchstart', tryPlayBgm, { once: true });
-  bgmToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    bgm.muted = !bgm.muted;
-    bgmToggle.textContent = bgm.muted ? '🔇' : '🔊';
-  });
-  ZukanFX.initToggle(document.getElementById('fxToggle'));
-
-  const audioCache = {};
-  function getAudio(src) {
-    if (!audioCache[src]) {
-      const a = new Audio(src);
-      a.preload = 'auto';
-      audioCache[src] = a;
-    }
-    return audioCache[src];
-  }
-
-  // 先読み
-  document.querySelectorAll('.card').forEach(card => {
-    if (card.dataset.sound) getAudio(card.dataset.sound);
-  });
-
-  const overlay     = document.getElementById('overlay');
-  const overlayImg  = document.getElementById('overlay-img');
-  const overlayLbl  = document.getElementById('overlay-label');
-
-  let isOpen = false;
-  let session = 0;  // タイマー無効化用：closeのたびにインクリメント
-
-  function closeOverlay() {
-    session++;  // 進行中のタイマーをすべて無効化
-    overlay.classList.remove('active');
-    isOpen = false;
-  }
-
-  function openOverlay(card) {
-    if (isOpen) return;
-    isOpen = true;
-    const mySession = ++session;
-
-    const img   = card.querySelector('.card-img');
-    const label = card.dataset.label;
-    const sound = card.dataset.sound;
-
-    // 画像・ラベルをセット（アニメーションリセット）
-    overlayImg.style.animation = 'none';
-    overlayImg.offsetHeight;  // reflow
-    overlayImg.style.animation = '';
-    overlayImg.src = img.src;
-    overlayImg.alt = img.alt;
-    overlayLbl.textContent = label;
-
-    overlay.classList.add('active');
-    ZukanFX.burst(overlay, card);
-
-    // 音声再生 → 終了後2秒で閉じる
-    const audio = getAudio(sound);
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-
-    audio.onended = () => {
-      if (session !== mySession) return;
-      setTimeout(() => { if (session === mySession) closeOverlay(); }, 2000);
-    };
-
-    // フォールバック（音声が鳴らない場合）
-    setTimeout(() => { if (session === mySession) closeOverlay(); }, 8000);
-  }
-
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      ZukanFX.tap(card);
-      openOverlay(card);
-    });
-  });
-
-  // オーバーレイタップで即閉じ
-  overlay.addEventListener('click', closeOverlay);
-
-  document.addEventListener('touchstart', () => {}, { passive: true });
-</script>
+<script src="vehicle-playback.js"></script>
+<script src="catalog-image-page.js?v=20260827-tap2"></script>
 
 <script src="app-shell.js"></script>
-<script src="catalog-pagination.js"></script>
+<script src="catalog-pagination.js?v=20260827-tap2"></script>
 </body>
 </html>

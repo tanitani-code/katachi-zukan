@@ -1,0 +1,72 @@
+[
+  {
+    "file": "kyuukyuusha.mp3",
+    "title": "救急車 サイレン03",
+    "source_member": "Ambulance-Siren03/Ambulance-Siren03-1(Close).mp3",
+    "source_url": "https://otologic.jp/free/se/transportation02.html",
+    "author": "OtoLogic",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "edits": "Trimmed, mono, volume adjustment and fades",
+    "start_ms": 70,
+    "duration_ms": 3500,
+    "dbfs": -34.09,
+    "peak_dbfs": -26.88
+  },
+  {
+    "file": "patocar.mp3",
+    "title": "パトカー サイレン03",
+    "source_member": "Police_Car-Siren03/Police_Car-Siren03-01(Close).mp3",
+    "source_url": "https://otologic.jp/free/se/transportation02.html",
+    "author": "OtoLogic",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "edits": "Trimmed, mono, volume adjustment and fades",
+    "start_ms": 125,
+    "duration_ms": 3500,
+    "dbfs": -27.82,
+    "peak_dbfs": -19.27
+  },
+  {
+    "file": "shoubousha.mp3",
+    "title": "消防車 サイレン01",
+    "source_member": "Fire_Truck-Siren01/Fire_Truck-Siren01-01(Close).mp3",
+    "source_url": "https://otologic.jp/free/se/transportation02.html",
+    "author": "OtoLogic",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "edits": "Trimmed, mono, volume adjustment and fades",
+    "start_ms": 95,
+    "duration_ms": 3500,
+    "dbfs": -29.03,
+    "peak_dbfs": -15.49
+  },
+  {
+    "file": "densha.mp3",
+    "title": "電車通過のみ",
+    "source_member": "train_pass_by1.mp3",
+    "source_url": "https://taira-komori.net/transfer01.html",
+    "author": "小森平",
+    "license": "Taira Komori site terms (not CC BY)",
+    "license_url": "https://taira-komori.net/welcome.html",
+    "edits": "Trimmed, mono, volume adjustment and fades",
+    "start_ms": 4600,
+    "duration_ms": 3500,
+    "dbfs": -28.34,
+    "peak_dbfs": -19.24
+  },
+  {
+    "file": "hikouki.mp3",
+    "title": "飛行整備場１",
+    "source_member": "airport1.mp3",
+    "author": "小森平",
+    "source_url": "https://taira-komori.net/transfer01.html",
+    "license": "Taira Komori site terms (not CC BY)",
+    "license_url": "https://taira-komori.net/welcome.html",
+    "edits": "Trimmed, mono, volume adjustment and fades",
+    "start_ms": 5000,
+    "duration_ms": 3500,
+    "dbfs": -32.02,
+    "peak_dbfs": -20.19
+  }
+]
