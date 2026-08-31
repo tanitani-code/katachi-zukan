@@ -1,0 +1,50 @@
+import assert from 'node:assert/strict';
+import {writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+const tabs=await (await fetch('http://127.0.0.1:9223/json')).json();
+const ws=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);
+await new Promise(r=>ws.onopen=r);
+let id=0; const pending=new Map();
+ws.onmessage=({data})=>{const m=JSON.parse(data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(m.error):p.resolve(m.result);}};
+const send=(method,params={})=>new Promise((resolve,reject)=>{pending.set(++id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));});
+const ev=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function page(name,selector){await send('Page.navigate',{url:'http://127.0.0.1:8080/'+name});for(let i=0;i<100;i++){await wait(150);if(await ev(`document.readyState!=='loading' && !!document.querySelector(${JSON.stringify(selector)})`))return;}throw Error('page timeout '+name);}
+try {
+ await send('Page.enable');
+ await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+ await page('parents.html','#sound-credits a');
+ assert.equal(await ev('document.querySelectorAll("audio").length'),0);
+ assert.equal(await ev('document.documentElement.scrollWidth<=innerWidth'),true);
+ await ev('localStorage.setItem("hajimete-zukan-bgm-muted","false"); dispatchEvent(new Event("pageshow"))');
+ await ev('document.querySelector("#bgm-setting").click()');
+ assert.equal(await ev('localStorage.getItem("hajimete-zukan-bgm-muted")'),'true');
+ await ev('document.querySelector("#sound-credits a").click()');
+ assert.equal(await ev('document.querySelector("#external-gate").open'),true);
+ await ev('document.querySelector("#gate-answer").value="0";document.querySelector("#gate-form").requestSubmit()');
+ assert.equal(await ev('document.querySelector("#external-gate").open'),true);
+ assert.ok(await ev('document.querySelector("#gate-error").textContent'));
+ await ev('document.querySelector("#gate-cancel").click()');
+ assert.equal(await ev('document.querySelector("#external-gate").open'),false);
+ await send('Page.captureScreenshot',{format:'png'}).then(s=>writeFile(join(tmpdir(),'zukan-parents.png'),Buffer.from(s.data,'base64')));
+ // Intercept the external navigation: verify approval without contacting a third party.
+ await send('Fetch.enable',{patterns:[{urlPattern:'https://otologic.jp/*',requestStage:'Request'}]});
+ const original=ws.onmessage;
+ let external=false;
+ ws.onmessage=event=>{const m=JSON.parse(event.data);if(m.method==='Fetch.requestPaused'){external=true;send('Fetch.failRequest',{requestId:m.params.requestId,errorReason:'Aborted'});}else original(event);};
+ await ev('document.querySelector("#sound-credits a").click(); const nums=document.querySelector("#gate-question").textContent.match(/\\d+/g); document.querySelector("#gate-answer").value=String(Number(nums[0])+Number(nums[1]));document.querySelector("#gate-form").requestSubmit()');
+ for(let i=0;i<30&&!external;i++)await wait(100);
+ assert.equal(external,true);
+ await send('Fetch.disable');
+ await page('index.html','a[href="parents.html"]');
+ assert.equal(await ev('document.querySelector("#bgm").muted'),true);
+ await ev('localStorage.setItem("hajimete-zukan-bgm-muted","false");dispatchEvent(new Event("pageshow"))');
+ assert.equal(await ev('document.querySelector("#bgm").muted'),false);
+ await page('parents.html','#bgm-setting');
+ assert.equal(await ev('document.querySelector("#bgm-setting").getAttribute("aria-checked")'),'true');
+ await ev('document.querySelector("#bgm-setting").click()');
+ await page('doubutsu.html','.illustrated-bgm');
+ assert.equal(await ev('document.querySelector("#bgm").muted'),true);
+ console.log('PASS: 390px layout, silent parent page, BGM persistence/top/category/pageshow, external gate wrong/cancel/correct, existing credits');
+} finally {ws.close();}

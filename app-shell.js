@@ -42,6 +42,17 @@
     bgmControl.setAttribute("aria-label", muted ? "BGMをつける" : "BGMを消す");
   }
   paintBgmControl();
+  // Settings can change on the parent page while this page is in the back-forward cache.
+  function restoreBgmPreference() {
+    try {
+      if (bgmElement) bgmElement.muted = localStorage.getItem(BGM_MUTED_KEY) === "true";
+      paintBgmControl();
+    } catch (_) {}
+  }
+  window.addEventListener('pageshow', restoreBgmPreference);
+  window.addEventListener('storage', (event) => {
+    if (event.key === BGM_MUTED_KEY || event.key === null) restoreBgmPreference();
+  });
   bgmControl?.addEventListener("click", () => {
     const bgm = document.getElementById("bgm");
     if (!bgm) return;

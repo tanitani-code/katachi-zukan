@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>保護者の方へ | はじめて図鑑</title>
+  <link rel="stylesheet" href="parents.css">
+  <script src="credits.js?v=20260831-play" defer></script>
+  <script src="parents.js" defer></script>
+</head>
+<body>
+  <header>
+    <span class="eyebrow">はじめて図鑑</span>
+    <h1>保護者の方へ</h1>
+    <p>いっしょに見つける、ことばと発見。</p>
+    <span class="decoration" aria-hidden="true">● ▲ ★</span>
+  </header>
+  <main>
+    <nav aria-label="このページの案内"><a href="#guide">あそびかた</a><a href="#settings">音の設定</a><a href="#credits">クレジット</a><a href="#privacy">情報の取り扱い</a></nav>
+    <section id="about-play">
+      <h2>見る・聞く・触る。<br>「もういっかい」が楽しい図鑑</h2>
+      <p>気になるものを指さしたり、同じことを何度も楽しんだり。そんなお子さまの「知りたい」を、親子で楽しむための図鑑です。</p>
+      <h3>触ると応える、発見の楽しさ</h3>
+      <p>タップすると動きや音が返ってきます。自分の働きかけで画面が変わる、小さな発見を楽しめます。</p>
+      <h3>見たものと、ことばに出会う</h3>
+      <p>画像を見ながら名前を聞けるので、まだ文字を読まないお子さまも遊べます。好きなものを繰り返しタップして、ことばの響きに親しめます。</p>
+      <h3>大きく映して、じっくり見る</h3>
+      <p>選んだものを大きく表示し、ひとつのものに目を向けやすくしています。「こんな形だね」「何色かな？」と、親子で見つけるきっかけにしてください。</p>
+      <p>名前を覚えることだけが目的ではありません。お子さまの好きなものに付き合い、まねをしたり、お話ししたり。図鑑で出会ったものを、お散歩や食卓でも一緒に探してみてください。</p>
+    </section>
+    <section id="guide">
+      <h2>あそびかた</h2>
+      <ol><li>TOPで好きな図鑑を選びます。</li><li>カードをタップすると、大きな画像と名前の読み上げが楽しめます。鳴き声や効果音がある項目は、続けて音が流れます。</li><li>拡大画面は音声が終わって約2秒後に閉じます。画面をタップして閉じることもできます。</li><li>複数ページの図鑑は、左右の矢印やスワイプで切り替えられます。最後の次は最初のページです。</li></ol>
+      <p>下の「×」でTOPへ戻れます。お子さまの様子に合わせて、休憩を挟みながら一緒にお楽しみください。</p>
+    </section>
+    <section id="settings">
+      <h2>音の設定</h2>
+      <div class="setting"><div><h3>BGM</h3><p>図鑑を移動しても設定を引き継ぎます。</p></div><button id="bgm-setting" type="button" role="switch" aria-checked="true" aria-label="BGM">ON</button></div>
+      <p id="setting-status" role="status"></p>
+      <p class="note">名前の読み上げ・効果音はBGMをOFFにしても再生されます。音量は端末側で調整してください。このページでは音は流れません。</p>
+    </section>
+    <section id="credits">
+      <h2>クレジット</h2>
+      <p>VOICEVOX：ずんだもん</p>
+      <div id="sound-credits"></div>
+    </section>
+    <section id="privacy">
+      <h2>情報の取り扱い</h2>
+      <p>現在の図鑑画面に、氏名・住所などを入力する機能はありません。BGMなどの設定は、この端末のブラウザ／アプリ内に保存します。別の端末とは同期しません。</p>
+    </section>
+    <section>
+      <h2>バージョン</h2>
+      <p>1.0.0</p>
+    </section>
+  </main>
+  <footer><a class="return" href="index.html">× <span>図鑑のTOPへ戻る</span></a></footer>
+  <dialog id="external-gate" aria-labelledby="gate-title">
+    <h2 id="gate-title">保護者の方へ</h2>
+    <p>外部サイトを開きます。保護者の方が次の計算に答えてください。</p>
+    <p id="destination"></p>
+    <form id="gate-form">
+      <label for="gate-answer" id="gate-question"></label>
+      <input id="gate-answer" type="text" inputmode="numeric" autocomplete="off" required>
+      <p id="gate-error" role="alert"></p>
+      <div class="actions"><button type="button" id="gate-cancel">戻る</button><button type="submit">確認して開く</button></div>
+    </form>
+  </dialog>
+</body>
+</html>
