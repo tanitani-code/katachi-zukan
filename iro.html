@@ -100,6 +100,7 @@
       justify-content: center;
     }
 
+    .card[hidden] { display: none; }
     .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
 
     .shape-wrap {
@@ -200,6 +201,24 @@
       font-size: 0.7rem;
       letter-spacing: 0.05em;
     }
+    .card[data-color="orange"] { background: #fff; }
+    .card[data-color="orange"] .dot { background: #ff8c00; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .card[data-color="orange"] .label { background: rgba(255,255,255,.9); color: #24445b; }
+    .card[data-color="pink"] { background: #fff; }
+    .card[data-color="pink"] .dot { background: #ff69b4; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .card[data-color="pink"] .label { background: rgba(255,255,255,.9); color: #24445b; }
+    .card[data-color="murasaki"] { background: #fff; }
+    .card[data-color="murasaki"] .dot { background: #8e24aa; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .card[data-color="murasaki"] .label { background: rgba(255,255,255,.9); color: #24445b; }
+    .card[data-color="chairo"] { background: #fff; }
+    .card[data-color="chairo"] .dot { background: #8d5524; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .card[data-color="chairo"] .label { background: rgba(255,255,255,.9); color: #24445b; }
+    .card[data-color="gray"] { background: #fff; }
+    .card[data-color="gray"] .dot { background: #808080; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .card[data-color="gray"] .label { background: rgba(255,255,255,.9); color: #24445b; }
+    .card[data-color="mizuiro"] { background: #fff; }
+    .card[data-color="mizuiro"] .dot { background: #80d8ff; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .card[data-color="mizuiro"] .label { background: rgba(255,255,255,.9); color: #24445b; }
   </style>
   <link rel="stylesheet" href="app-shell.css">
   <link rel="stylesheet" href="catalog-pagination.css">
@@ -246,6 +265,30 @@
     <div class="shape-wrap"><div class="dot"></div></div>
     <span class="label">くろ</span>
   </div>
+  <div class="card" data-color="orange" data-sound="sounds/orange.mp3" data-label="オレンジ" hidden>
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">オレンジ</span>
+  </div>
+  <div class="card" data-color="pink" data-sound="sounds/pink.mp3" data-label="ピンク" hidden>
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">ピンク</span>
+  </div>
+  <div class="card" data-color="murasaki" data-sound="sounds/murasaki.mp3" data-label="むらさき" hidden>
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">むらさき</span>
+  </div>
+  <div class="card" data-color="chairo" data-sound="sounds/chairo.mp3" data-label="ちゃいろ" hidden>
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">ちゃいろ</span>
+  </div>
+  <div class="card" data-color="gray" data-sound="sounds/gray.mp3" data-label="グレー" hidden>
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">グレー</span>
+  </div>
+  <div class="card" data-color="mizuiro" data-sound="sounds/mizuiro.mp3" data-label="みずいろ" hidden>
+    <div class="shape-wrap"><div class="dot"></div></div>
+    <span class="label">みずいろ</span>
+  </div>
 </main>
 
 <footer></footer>
@@ -285,12 +328,13 @@
 
   function closeOverlay() {
     session++;
+    Object.values(audioCache).forEach(audio => { audio.pause(); audio.onended = null; });
     overlay.classList.remove('active');
     isOpen = false;
   }
 
   function openOverlay(card) {
-    if (isOpen) return;
+    if (isOpen || card.hidden) return;
     isOpen = true;
     const mySession = ++session;
 
@@ -332,10 +376,13 @@
     });
   });
   overlay.addEventListener('click', closeOverlay);
+  document.addEventListener('zukan-page-change', closeOverlay);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) closeOverlay(); });
+  window.addEventListener('pagehide', closeOverlay);
   document.addEventListener('touchstart', () => {}, { passive: true });
 </script>
 
-<script src="app-shell.js"></script>
-<script src="catalog-pagination.js"></script>
+<script src="app-shell.js?v=20260828-navigation"></script>
+<script src="catalog-pagination.js?v=20260828-navigation"></script>
 </body>
 </html>

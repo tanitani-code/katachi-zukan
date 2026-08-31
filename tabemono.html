@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>たべものずかん</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fff8f0;
+      --card-radius: 24px;
+    }
+
+    html, body { height: 100dvh; overflow: hidden; }
+
+    body {
+      background: var(--bg);
+      font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    nav {
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 12px) 16px 0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-back, .bgm-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(34px, 8vw, 42px);
+      height: clamp(34px, 8vw, 42px);
+      font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+      font-weight: 700;
+      color: #e65100;
+      text-decoration: none;
+      background: #fff3e0;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      -webkit-tap-highlight-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    header {
+      flex-shrink: 0;
+      width: 100%;
+      text-align: center;
+      padding: clamp(6px, 1.5dvh, 16px) 16px clamp(4px, 1dvh, 8px);
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 5vw, 2rem);
+      color: #e65100;
+      letter-spacing: 0.15em;
+      text-shadow: 2px 2px 0 #ffe0b2;
+    }
+
+    header p {
+      font-size: clamp(0.75rem, 3vw, 1rem);
+      color: #a1887f;
+      margin-top: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 10px) clamp(8px, 3vw, 14px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.5dvh, 12px);
+    }
+
+    .card {
+      position: relative;
+      border-radius: var(--card-radius);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s, transform 0.1s;
+    }
+
+    .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card[hidden] { display: none !important; }
+
+    .label {
+      background: rgba(255, 255, 255, 0.90);
+      color: #263238;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+    }
+
+    .card { background: #fff; }
+    .card .label { color: #c33e24; }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-img {
+        width: min(80vw, 80dvh);
+        height: min(80vw, 80dvh);
+        object-fit: contain;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    footer {
+      flex-shrink: 0;
+      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
+      color: #bcaaa4;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+  <link rel="stylesheet" href="app-shell.css?v=20260828-newcats">
+  <link rel="stylesheet" href="catalog-pagination.css">
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a>
+  <div style="display:flex; gap:6px;">
+    <button id="fxToggle" class="fx-toggle" aria-label="エフェクト切替"></button>
+    <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  </div>
+</nav>
+
+<audio id="bgm" src="sounds/bgm_tabemono.mp3" loop preload="auto"></audio>
+<script src="effects.js"></script>
+
+<header>
+  <h1>たべものずかん</h1>
+</header>
+
+<main>
+  <div class="card" data-item="onigiri" data-sound="sounds/onigiri.mp3" data-label="おにぎり">
+    <img class="card-img" src="images/food/onigiri.webp?v=20260828-alpha" alt="おにぎり" decoding="async">
+    <span class="label">おにぎり</span>
+  </div>
+  <div class="card" data-item="pan" data-sound="sounds/pan.mp3" data-label="パン">
+    <img class="card-img" src="images/food/pan.webp?v=20260828-alpha" alt="パン" decoding="async">
+    <span class="label">パン</span>
+  </div>
+  <div class="card" data-item="udon" data-sound="sounds/udon.mp3" data-label="うどん">
+    <img class="card-img" src="images/food/udon.webp?v=20260831-maskfix" alt="うどん" decoding="async">
+    <span class="label">うどん</span>
+  </div>
+  <div class="card" data-item="curry" data-sound="sounds/curry.mp3" data-label="カレー">
+    <img class="card-img" src="images/food/curry.webp?v=20260831-maskfix" alt="カレー" decoding="async">
+    <span class="label">カレー</span>
+  </div>
+  <div class="card" data-item="tamagoyaki" data-sound="sounds/tamagoyaki.mp3" data-label="たまごやき">
+    <img class="card-img" src="images/food/tamagoyaki.webp?v=20260828-alpha" alt="たまごやき" decoding="async">
+    <span class="label">たまごやき</span>
+  </div>
+  <div class="card" data-item="cake" data-sound="sounds/cake.mp3" data-label="ケーキ">
+    <img class="card-img" src="images/food/cake.webp?v=20260831-maskfix" alt="ケーキ" decoding="async">
+    <span class="label">ケーキ</span>
+  </div>
+  <div class="card" data-item="ramen" data-sound="sounds/ramen.mp3" data-label="ラーメン" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/ramen.webp?v=20260831-expanded" alt="ラーメン" decoding="async">
+    <span class="label">ラーメン</span>
+  </div>
+  <div class="card" data-item="sushi" data-sound="sounds/sushi.mp3" data-label="おすし" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/sushi.webp?v=20260831-expanded" alt="おすし" decoding="async">
+    <span class="label">おすし</span>
+  </div>
+  <div class="card" data-item="soba" data-sound="sounds/soba.mp3" data-label="そば" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/soba.webp?v=20260831-expanded" alt="そば" decoding="async">
+    <span class="label">そば</span>
+  </div>
+  <div class="card" data-item="spaghetti" data-sound="sounds/spaghetti.mp3" data-label="スパゲッティ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/spaghetti.webp?v=20260831-expanded" alt="スパゲッティ" decoding="async">
+    <span class="label">スパゲッティ</span>
+  </div>
+  <div class="card" data-item="hamburger" data-sound="sounds/hamburger.mp3" data-label="ハンバーガー" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/hamburger.webp?v=20260831-expanded" alt="ハンバーガー" decoding="async">
+    <span class="label">ハンバーガー</span>
+  </div>
+  <div class="card" data-item="pizza" data-sound="sounds/pizza.mp3" data-label="ピザ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/pizza.webp?v=20260831-expanded" alt="ピザ" decoding="async">
+    <span class="label">ピザ</span>
+  </div>
+  <div class="card" data-item="hotdog" data-sound="sounds/hotdog.mp3" data-label="ホットドッグ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/hotdog.webp?v=20260831-expanded" alt="ホットドッグ" decoding="async">
+    <span class="label">ホットドッグ</span>
+  </div>
+  <div class="card" data-item="gyoza" data-sound="sounds/gyoza.mp3" data-label="ぎょうざ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/gyoza.webp?v=20260831-expanded" alt="ぎょうざ" decoding="async">
+    <span class="label">ぎょうざ</span>
+  </div>
+  <div class="card" data-item="karaage" data-sound="sounds/karaage.mp3" data-label="からあげ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/karaage.webp?v=20260831-expanded" alt="からあげ" decoding="async">
+    <span class="label">からあげ</span>
+  </div>
+  <div class="card" data-item="omurice" data-sound="sounds/omurice.mp3" data-label="オムライス" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/omurice.webp?v=20260831-expanded" alt="オムライス" decoding="async">
+    <span class="label">オムライス</span>
+  </div>
+  <div class="card" data-item="purin" data-sound="sounds/purin.mp3" data-label="プリン" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/purin.webp?v=20260831-expanded" alt="プリン" decoding="async">
+    <span class="label">プリン</span>
+  </div>
+  <div class="card" data-item="icecream" data-sound="sounds/icecream.mp3" data-label="アイスクリーム" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/food/icecream.webp?v=20260831-expanded" alt="アイスクリーム" decoding="async">
+    <span class="label">アイスクリーム</span>
+  </div>
+</main>
+
+<footer></footer>
+
+<div id="overlay">
+  <img id="overlay-img" src="" alt="">
+  <span id="overlay-label"></span>
+</div>
+
+<script src="vehicle-playback.js"></script>
+<script src="catalog-image-page.js?v=20260827-tap2"></script>
+
+<script src="app-shell.js?v=20260828-newcats"></script>
+<script src="catalog-pagination.js?v=20260827-tap2"></script>
+</body>
+</html>

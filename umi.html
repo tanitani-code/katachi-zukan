@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>うみのいきもの</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fff8f0;
+      --card-radius: 24px;
+    }
+
+    html, body { height: 100dvh; overflow: hidden; }
+
+    body {
+      background: var(--bg);
+      font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    nav {
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 12px) 16px 0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-back, .bgm-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(34px, 8vw, 42px);
+      height: clamp(34px, 8vw, 42px);
+      font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+      font-weight: 700;
+      color: #e65100;
+      text-decoration: none;
+      background: #fff3e0;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      -webkit-tap-highlight-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    header {
+      flex-shrink: 0;
+      width: 100%;
+      text-align: center;
+      padding: clamp(6px, 1.5dvh, 16px) 16px clamp(4px, 1dvh, 8px);
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 5vw, 2rem);
+      color: #e65100;
+      letter-spacing: 0.15em;
+      text-shadow: 2px 2px 0 #ffe0b2;
+    }
+
+    header p {
+      font-size: clamp(0.75rem, 3vw, 1rem);
+      color: #a1887f;
+      margin-top: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 10px) clamp(8px, 3vw, 14px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.5dvh, 12px);
+    }
+
+    .card {
+      position: relative;
+      border-radius: var(--card-radius);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s, transform 0.1s;
+    }
+
+    .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card[hidden] { display: none !important; }
+
+    .label {
+      background: rgba(255, 255, 255, 0.90);
+      color: #263238;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+    }
+
+    .card { background: #fff; }
+    .card .label { color: #0879a4; }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-img {
+        width: min(80vw, 80dvh);
+        height: min(80vw, 80dvh);
+        object-fit: contain;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    footer {
+      flex-shrink: 0;
+      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
+      color: #bcaaa4;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+  <link rel="stylesheet" href="app-shell.css?v=20260828-newcats">
+  <link rel="stylesheet" href="catalog-pagination.css">
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a>
+  <div style="display:flex; gap:6px;">
+    <button id="fxToggle" class="fx-toggle" aria-label="エフェクト切替"></button>
+    <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  </div>
+</nav>
+
+<audio id="bgm" src="sounds/bgm_umi.mp3" loop preload="auto"></audio>
+<script src="effects.js"></script>
+
+<header>
+  <h1>うみのいきもの</h1>
+</header>
+
+<main>
+  <div class="card" data-item="iruka" data-sound="sounds/iruka.mp3" data-label="イルカ">
+    <img class="card-img" src="images/sea/iruka.webp?v=20260828-alpha" alt="イルカ" decoding="async">
+    <span class="label">イルカ</span>
+  </div>
+  <div class="card" data-item="kujira" data-sound="sounds/kujira.mp3" data-label="クジラ">
+    <img class="card-img" src="images/sea/kujira.webp?v=20260828-alpha" alt="クジラ" decoding="async">
+    <span class="label">クジラ</span>
+  </div>
+  <div class="card" data-item="same" data-sound="sounds/same.mp3" data-label="サメ">
+    <img class="card-img" src="images/sea/same.webp?v=20260828-alpha" alt="サメ" decoding="async">
+    <span class="label">サメ</span>
+  </div>
+  <div class="card" data-item="umigame" data-sound="sounds/umigame.mp3" data-label="カメ">
+    <img class="card-img" src="images/sea/umigame.webp?v=20260828-alpha" alt="カメ" decoding="async">
+    <span class="label">カメ</span>
+  </div>
+  <div class="card" data-item="tako" data-sound="sounds/tako.mp3" data-label="タコ">
+    <img class="card-img" src="images/sea/tako.webp?v=20260828-alpha" alt="タコ" decoding="async">
+    <span class="label">タコ</span>
+  </div>
+  <div class="card" data-item="kani" data-sound="sounds/kani.mp3" data-label="カニ">
+    <img class="card-img" src="images/sea/kani.webp?v=20260831-crab-new" alt="カニ" decoding="async">
+    <span class="label">カニ</span>
+  </div>
+  <div class="card" data-item="azarashi" data-sound="sounds/azarashi.mp3" data-label="アザラシ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/azarashi.webp?v=20260831-expanded" alt="アザラシ" decoding="async">
+    <span class="label">アザラシ</span>
+  </div>
+  <div class="card" data-item="ashika" data-sound="sounds/ashika.mp3" data-label="アシカ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/ashika.webp?v=20260831-expanded" alt="アシカ" decoding="async">
+    <span class="label">アシカ</span>
+  </div>
+  <div class="card" data-item="rakko" data-sound="sounds/rakko.mp3" data-label="ラッコ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/rakko.webp?v=20260831-expanded" alt="ラッコ" decoding="async">
+    <span class="label">ラッコ</span>
+  </div>
+  <div class="card" data-item="pengin" data-sound="sounds/pengin.mp3" data-label="ペンギン" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/pengin.webp?v=20260831-expanded" alt="ペンギン" decoding="async">
+    <span class="label">ペンギン</span>
+  </div>
+  <div class="card" data-item="kurage" data-sound="sounds/kurage.mp3" data-label="クラゲ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/kurage.webp?v=20260831-expanded" alt="クラゲ" decoding="async">
+    <span class="label">クラゲ</span>
+  </div>
+  <div class="card" data-item="ika" data-sound="sounds/ika.mp3" data-label="イカ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/ika.webp?v=20260831-expanded" alt="イカ" decoding="async">
+    <span class="label">イカ</span>
+  </div>
+  <div class="card" data-item="tatsunootoshigo" data-sound="sounds/tatsunootoshigo.mp3" data-label="タツノオトシゴ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/tatsunootoshigo.webp?v=20260831-expanded" alt="タツノオトシゴ" decoding="async">
+    <span class="label">タツノオトシゴ</span>
+  </div>
+  <div class="card" data-item="hitode" data-sound="sounds/hitode.mp3" data-label="ヒトデ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/hitode.webp?v=20260831-expanded" alt="ヒトデ" decoding="async">
+    <span class="label">ヒトデ</span>
+  </div>
+  <div class="card" data-item="fugu" data-sound="sounds/fugu.mp3" data-label="フグ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/fugu.webp?v=20260831-expanded" alt="フグ" decoding="async">
+    <span class="label">フグ</span>
+  </div>
+  <div class="card" data-item="manta" data-sound="sounds/manta.mp3" data-label="マンタ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/manta.webp?v=20260831-expanded" alt="マンタ" decoding="async">
+    <span class="label">マンタ</span>
+  </div>
+  <div class="card" data-item="ebi" data-sound="sounds/ebi.mp3" data-label="エビ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/ebi.webp?v=20260831-expanded" alt="エビ" decoding="async">
+    <span class="label">エビ</span>
+  </div>
+  <div class="card" data-item="yadokari" data-sound="sounds/yadokari.mp3" data-label="ヤドカリ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/sea/yadokari.webp?v=20260831-expanded" alt="ヤドカリ" decoding="async">
+    <span class="label">ヤドカリ</span>
+  </div>
+</main>
+
+<footer></footer>
+
+<div id="overlay">
+  <img id="overlay-img" src="" alt="">
+  <span id="overlay-label"></span>
+</div>
+
+<script src="vehicle-playback.js"></script>
+<script src="catalog-image-page.js?v=20260827-tap2"></script>
+
+<script src="app-shell.js?v=20260828-newcats"></script>
+<script src="catalog-pagination.js?v=20260827-tap2"></script>
+</body>
+</html>

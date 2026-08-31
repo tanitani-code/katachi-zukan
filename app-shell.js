@@ -91,6 +91,8 @@
 
   if (isTop) {
     const titleSounds = {
+      umi: "sounds/title_umi.mp3",
+      tabemono: "sounds/title_tabemono.mp3",
       katachi: "sounds/title_katachi.mp3",
       iro: "sounds/title_iro.mp3",
       kazu: "sounds/title_kazu.mp3",
@@ -104,6 +106,16 @@
     let titleSession = 0;
     let originalBgmVolume = null;
     let navigating = false;
+    // Back/forward cache restores JavaScript state, including the navigation lock.
+    window.addEventListener("pageshow", () => {
+      navigating = false;
+      titleSession++;
+      currentTitleVoice?.pause();
+      currentTitleVoice = null;
+      if (originalBgmVolume !== null && bgmElement) bgmElement.volume = originalBgmVolume;
+      originalBgmVolume = null;
+      document.querySelectorAll(".category-announcing").forEach(card => card.classList.remove("category-announcing"));
+    });
 
     function getTitleAudio(src) {
       if (!titleAudioCache.has(src)) {
@@ -142,13 +154,13 @@
     }
 
     Object.values(titleSounds).forEach(getTitleAudio);
-    getTitleAudio("sounds/title_top.mp3");
+    getTitleAudio("sounds/title_top.mp3?v=20260828-accent");
 
     const introKey = "zukan-intro-played";
     function tryIntro(event) {
       if (sessionStorage.getItem(introKey) || event?.target?.closest?.(".card, button, a")) return;
       playTitleVoice(
-        "sounds/title_top.mp3",
+        "sounds/title_top.mp3?v=20260828-accent",
         null,
         () => sessionStorage.setItem(introKey, "1")
       );

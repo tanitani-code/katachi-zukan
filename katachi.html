@@ -101,6 +101,7 @@
       justify-content: center;
     }
 
+    .card[hidden] { display: none; }
     .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
 
     .shape-wrap {
@@ -238,6 +239,18 @@
       font-size: 0.7rem;
       letter-spacing: 0.05em;
     }
+
+    .card[data-shape="daen"], .card[data-shape="nagashikaku"],
+    .card[data-shape="hishigata"], .card[data-shape="hanen"],
+    .card[data-shape="shizuku"], .card[data-shape="juuji"] { background: #fff; }
+    .card .label { background: rgba(255,255,255,.9); color: #24445b; }
+    .shape-daen { width: calc(var(--s) * 1.2); height: calc(var(--s) * .7); border-radius: 50%; background: #ff8c00; }
+    .shape-nagashikaku { width: calc(var(--s) * 1.2); height: calc(var(--s) * .65); background: #26a69a; }
+    .shape-hishigata { width: var(--s); height: var(--s); background: #ab47bc; clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); }
+    .shape-hanen { width: var(--s); height: calc(var(--s) * .5); border-radius: 100% 100% 0 0 / 200% 200% 0 0; background: #ff7043; }
+    .shape-shizuku { width: var(--s); height: var(--s); }
+    .shape-juuji { width: var(--s); height: var(--s); background: #43a047; clip-path: polygon(33% 0,67% 0,67% 33%,100% 33%,100% 67%,67% 67%,67% 100%,33% 100%,33% 67%,0 67%,0 33%,33% 33%); }
+
   </style>
   <link rel="stylesheet" href="app-shell.css">
   <link rel="stylesheet" href="catalog-pagination.css">
@@ -288,6 +301,30 @@
     <div class="shape-wrap"><div class="shape-tsuki"></div></div>
     <span class="label">つき</span>
   </div>
+  <div class="card" data-shape="daen" data-sound="sounds/daen.mp3" data-label="だえん" hidden>
+    <div class="shape-wrap"><div class="shape-daen"></div></div>
+    <span class="label">だえん</span>
+  </div>
+  <div class="card" data-shape="nagashikaku" data-sound="sounds/nagashikaku.mp3" data-label="ながしかく" hidden>
+    <div class="shape-wrap"><div class="shape-nagashikaku"></div></div>
+    <span class="label">ながしかく</span>
+  </div>
+  <div class="card" data-shape="hishigata" data-sound="sounds/hishigata.mp3" data-label="ひしがた" hidden>
+    <div class="shape-wrap"><div class="shape-hishigata"></div></div>
+    <span class="label">ひしがた</span>
+  </div>
+  <div class="card" data-shape="hanen" data-sound="sounds/hanen.mp3" data-label="はんえん" hidden>
+    <div class="shape-wrap"><div class="shape-hanen"></div></div>
+    <span class="label">はんえん</span>
+  </div>
+  <div class="card" data-shape="shizuku" data-sound="sounds/shizuku.mp3" data-label="しずく" hidden>
+    <div class="shape-wrap"><svg class="shape-shizuku" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 3 C43 23 16 45 16 64 A34 34 0 0 0 84 64 C84 45 57 23 50 3Z" fill="#29b6f6"/></svg></div>
+    <span class="label">しずく</span>
+  </div>
+  <div class="card" data-shape="juuji" data-sound="sounds/juuji.mp3" data-label="じゅうじ" hidden>
+    <div class="shape-wrap"><div class="shape-juuji"></div></div>
+    <span class="label">じゅうじ</span>
+  </div>
 </main>
 
 <footer></footer>
@@ -327,12 +364,13 @@
 
   function closeOverlay() {
     session++;
+    Object.values(audioCache).forEach(audio => { audio.pause(); audio.onended = null; });
     overlay.classList.remove('active');
     isOpen = false;
   }
 
   function openOverlay(card) {
-    if (isOpen) return;
+    if (isOpen || card.hidden) return;
     isOpen = true;
     const mySession = ++session;
 
@@ -367,10 +405,13 @@
     });
   });
   overlay.addEventListener('click', closeOverlay);
+  document.addEventListener('zukan-page-change', closeOverlay);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) closeOverlay(); });
+  window.addEventListener('pagehide', closeOverlay);
   document.addEventListener('touchstart', () => {}, { passive: true });
 </script>
 
-<script src="app-shell.js"></script>
-<script src="catalog-pagination.js"></script>
+<script src="app-shell.js?v=20260828-navigation"></script>
+<script src="catalog-pagination.js?v=20260828-navigation"></script>
 </body>
 </html>
