@@ -319,7 +319,10 @@
     if (!audioCache[src]) { const a = new Audio(src); a.preload = 'auto'; audioCache[src] = a; }
     return audioCache[src];
   }
-  document.querySelectorAll('.card').forEach(card => { if (card.dataset.sound) getAudio(card.dataset.sound); });
+  function preloadCards(cards) {
+    cards.forEach(card => { if (card.dataset.sound) getAudio(card.dataset.sound); });
+  }
+  preloadCards(Array.from(document.querySelectorAll('.card')).slice(0, 6));
 
   const overlay = document.getElementById('overlay');
   const overlayVisual = document.getElementById('overlay-visual');
@@ -376,7 +379,10 @@
     });
   });
   overlay.addEventListener('click', closeOverlay);
-  document.addEventListener('zukan-page-change', closeOverlay);
+  document.addEventListener('zukan-page-change', event => {
+    closeOverlay();
+    preloadCards(event.detail.visibleCards);
+  });
   document.addEventListener('visibilitychange', () => { if (document.hidden) closeOverlay(); });
   window.addEventListener('pagehide', closeOverlay);
   document.addEventListener('touchstart', () => {}, { passive: true });
