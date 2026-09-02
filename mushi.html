@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>むしずかん</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fff8f0;
+      --card-radius: 24px;
+    }
+
+    html, body { height: 100dvh; overflow: hidden; }
+
+    body {
+      background: var(--bg);
+      font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    nav {
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 12px) 16px 0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-back, .bgm-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(34px, 8vw, 42px);
+      height: clamp(34px, 8vw, 42px);
+      font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+      font-weight: 700;
+      color: #2e7d32;
+      text-decoration: none;
+      background: #fff3e0;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      -webkit-tap-highlight-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    header {
+      flex-shrink: 0;
+      width: 100%;
+      text-align: center;
+      padding: clamp(6px, 1.5dvh, 16px) 16px clamp(4px, 1dvh, 8px);
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 5vw, 2rem);
+      color: #2e7d32;
+      letter-spacing: 0.15em;
+      text-shadow: 2px 2px 0 #c8e6c9;
+    }
+
+    header p {
+      font-size: clamp(0.75rem, 3vw, 1rem);
+      color: #a1887f;
+      margin-top: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 10px) clamp(8px, 3vw, 14px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.5dvh, 12px);
+    }
+
+    .card {
+      position: relative;
+      border-radius: var(--card-radius);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s, transform 0.1s;
+    }
+
+    .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card[hidden] { display: none !important; }
+
+    .label {
+      background: rgba(255, 255, 255, 0.90);
+      color: #263238;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+    }
+
+    .card { background: #fff; }
+    .card .label { color: #2e7d32; }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-img {
+        width: min(80vw, 80dvh);
+        height: min(80vw, 80dvh);
+        object-fit: contain;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    footer {
+      flex-shrink: 0;
+      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
+      color: #bcaaa4;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+  <link rel="stylesheet" href="app-shell.css?v=20260828-newcats">
+  <link rel="stylesheet" href="catalog-pagination.css">
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a>
+  <div style="display:flex; gap:6px;">
+    <button id="fxToggle" class="fx-toggle" aria-label="エフェクト切替"></button>
+    <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  </div>
+</nav>
+
+<audio id="bgm" src="sounds/bgm_mushi.mp3" loop preload="auto"></audio>
+<script src="effects.js"></script>
+
+<header>
+  <h1>むしずかん</h1>
+</header>
+
+<main>
+  <div class="card" data-item="kabutomushi" data-sound="sounds/mushi/kabutomushi.mp3" data-label="かぶとむし">
+    <img class="card-img" src="images/insects/kabutomushi.webp?v=20260902" alt="かぶとむし" decoding="async">
+    <span class="label">かぶとむし</span>
+  </div>
+  <div class="card" data-item="kuwagata" data-sound="sounds/mushi/kuwagata.mp3" data-label="くわがた">
+    <img class="card-img" src="images/insects/kuwagata.webp?v=20260902" alt="くわがた" decoding="async">
+    <span class="label">くわがた</span>
+  </div>
+  <div class="card" data-item="chou" data-sound="sounds/mushi/chou.mp3" data-label="ちょう">
+    <img class="card-img" src="images/insects/chou.webp?v=20260902" alt="ちょう" decoding="async">
+    <span class="label">ちょう</span>
+  </div>
+  <div class="card" data-item="tentoumushi" data-sound="sounds/mushi/tentoumushi.mp3" data-label="てんとうむし">
+    <img class="card-img" src="images/insects/tentoumushi.webp?v=20260902" alt="てんとうむし" decoding="async">
+    <span class="label">てんとうむし</span>
+  </div>
+  <div class="card" data-item="semi" data-sound="sounds/mushi/semi.mp3" data-label="せみ">
+    <img class="card-img" src="images/insects/semi.webp?v=20260902" alt="せみ" decoding="async">
+    <span class="label">せみ</span>
+  </div>
+  <div class="card" data-item="tonbo" data-sound="sounds/mushi/tonbo.mp3" data-label="とんぼ">
+    <img class="card-img" src="images/insects/tonbo.webp?v=20260902" alt="とんぼ" decoding="async">
+    <span class="label">とんぼ</span>
+  </div>
+  <div class="card" data-item="kamakiri" data-sound="sounds/mushi/kamakiri.mp3" data-label="かまきり" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/kamakiri.webp?v=20260902" alt="かまきり" decoding="async">
+    <span class="label">かまきり</span>
+  </div>
+  <div class="card" data-item="batta" data-sound="sounds/mushi/batta.mp3" data-label="ばった" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/batta.webp?v=20260902" alt="ばった" decoding="async">
+    <span class="label">ばった</span>
+  </div>
+  <div class="card" data-item="ari" data-sound="sounds/mushi/ari.mp3" data-label="あり" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/ari.webp?v=20260902" alt="あり" decoding="async">
+    <span class="label">あり</span>
+  </div>
+  <div class="card" data-item="hachi" data-sound="sounds/mushi/hachi.mp3" data-label="はち" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/hachi.webp?v=20260902" alt="はち" decoding="async">
+    <span class="label">はち</span>
+  </div>
+  <div class="card" data-item="dangomushi" data-sound="sounds/mushi/dangomushi.mp3" data-label="だんごむし" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/dangomushi.webp?v=20260902" alt="だんごむし" decoding="async">
+    <span class="label">だんごむし</span>
+  </div>
+  <div class="card" data-item="katatsumuri" data-sound="sounds/mushi/katatsumuri.mp3" data-label="かたつむり" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/katatsumuri.webp?v=20260902" alt="かたつむり" decoding="async">
+    <span class="label">かたつむり</span>
+  </div>
+  <div class="card" data-item="kumo" data-sound="sounds/mushi/kumo.mp3" data-label="くも" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/kumo.webp?v=20260902" alt="くも" decoding="async">
+    <span class="label">くも</span>
+  </div>
+  <div class="card" data-item="hotaru" data-sound="sounds/mushi/hotaru.mp3" data-label="ほたる" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/hotaru.webp?v=20260902" alt="ほたる" decoding="async">
+    <span class="label">ほたる</span>
+  </div>
+  <div class="card" data-item="koorogi" data-sound="sounds/mushi/koorogi.mp3" data-label="こおろぎ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/koorogi.webp?v=20260902" alt="こおろぎ" decoding="async">
+    <span class="label">こおろぎ</span>
+  </div>
+  <div class="card" data-item="imomushi" data-sound="sounds/mushi/imomushi.mp3" data-label="いもむし" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/imomushi.webp?v=20260902" alt="いもむし" decoding="async">
+    <span class="label">いもむし</span>
+  </div>
+  <div class="card" data-item="kanabun" data-sound="sounds/mushi/kanabun.mp3" data-label="カナブン" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/kanabun.webp?v=20260902" alt="カナブン" decoding="async">
+    <span class="label">カナブン</span>
+  </div>
+  <div class="card" data-item="minomushi" data-sound="sounds/mushi/minomushi.mp3" data-label="みのむし" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/insects/minomushi.webp?v=20260902" alt="みのむし" decoding="async">
+    <span class="label">みのむし</span>
+  </div>
+</main>
+
+<footer></footer>
+
+<div id="overlay">
+  <img id="overlay-img" src="" alt="">
+  <span id="overlay-label"></span>
+</div>
+
+<script src="vehicle-playback.js"></script>
+<script src="catalog-image-page.js?v=20260827-tap2"></script>
+
+<script src="app-shell.js?v=20260828-newcats"></script>
+<script src="catalog-pagination.js?v=20260827-tap2"></script>
+</body>
+</html>

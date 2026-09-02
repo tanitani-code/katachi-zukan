@@ -104,6 +104,8 @@
     const titleSounds = {
       umi: "sounds/title_umi.mp3",
       tabemono: "sounds/title_tabemono.mp3",
+      mushi: "sounds/title_mushi.mp3",
+      minomawari: "sounds/title_minomawari.mp3",
       katachi: "sounds/title_katachi.mp3",
       iro: "sounds/title_iro.mp3",
       kazu: "sounds/title_kazu.mp3",

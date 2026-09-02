@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>みのまわりずかん</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fff8f0;
+      --card-radius: 24px;
+    }
+
+    html, body { height: 100dvh; overflow: hidden; }
+
+    body {
+      background: var(--bg);
+      font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    nav {
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 12px) 16px 0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-back, .bgm-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(34px, 8vw, 42px);
+      height: clamp(34px, 8vw, 42px);
+      font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+      font-weight: 700;
+      color: #1565c0;
+      text-decoration: none;
+      background: #fff3e0;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      -webkit-tap-highlight-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    header {
+      flex-shrink: 0;
+      width: 100%;
+      text-align: center;
+      padding: clamp(6px, 1.5dvh, 16px) 16px clamp(4px, 1dvh, 8px);
+    }
+
+    header h1 {
+      font-size: clamp(1.2rem, 5vw, 2rem);
+      color: #1565c0;
+      letter-spacing: 0.15em;
+      text-shadow: 2px 2px 0 #bbdefb;
+    }
+
+    header p {
+      font-size: clamp(0.75rem, 3vw, 1rem);
+      color: #a1887f;
+      margin-top: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(6px, 1.5dvh, 10px) clamp(8px, 3vw, 14px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      gap: clamp(6px, 1.5dvh, 12px);
+    }
+
+    .card {
+      position: relative;
+      border-radius: var(--card-radius);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: box-shadow 0.15s, transform 0.1s;
+    }
+
+    .card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card[hidden] { display: none !important; }
+
+    .label {
+      background: rgba(255, 255, 255, 0.90);
+      color: #263238;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(4px, 1dvh, 8px) 6px clamp(5px, 1.2dvh, 10px);
+      text-align: center;
+      font-size: clamp(0.85rem, 4vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+    }
+
+    .card { background: #fff; }
+    .card .label { color: #1565c0; }
+
+    /* ===== オーバーレイ ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: clamp(12px, 3dvh, 24px);
+    }
+    #overlay.active { display: flex; }
+
+    @keyframes pop-in {
+      0%   { transform: scale(0.6); opacity: 0; }
+      70%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #overlay-img {
+        width: min(80vw, 80dvh);
+        height: min(80vw, 80dvh);
+        object-fit: contain;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+      animation: pop-in 0.35s cubic-bezier(.36,.07,.19,.97) forwards;
+    }
+
+    #overlay-label {
+      font-size: clamp(1.6rem, 8vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    footer {
+      flex-shrink: 0;
+      padding: clamp(4px, 1dvh, 12px) 0 clamp(6px, 1.5dvh, 16px);
+      color: #bcaaa4;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+  <link rel="stylesheet" href="app-shell.css?v=20260828-newcats">
+  <link rel="stylesheet" href="catalog-pagination.css">
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a>
+  <div style="display:flex; gap:6px;">
+    <button id="fxToggle" class="fx-toggle" aria-label="エフェクト切替"></button>
+    <button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button>
+  </div>
+</nav>
+
+<audio id="bgm" src="sounds/bgm_minomawari.mp3" loop preload="auto"></audio>
+<script src="effects.js"></script>
+
+<header>
+  <h1>みのまわりずかん</h1>
+</header>
+
+<main>
+  <div class="card" data-item="kutsu" data-sound="sounds/everyday/kutsu.mp3" data-label="くつ">
+    <img class="card-img" src="images/everyday/kutsu.webp?v=20260902" alt="くつ" decoding="async">
+    <span class="label">くつ</span>
+  </div>
+  <div class="card" data-item="boushi" data-sound="sounds/everyday/boushi.mp3" data-label="ぼうし">
+    <img class="card-img" src="images/everyday/boushi.webp?v=20260902" alt="ぼうし" decoding="async">
+    <span class="label">ぼうし</span>
+  </div>
+  <div class="card" data-item="kasa" data-sound="sounds/everyday/kasa.mp3" data-label="かさ">
+    <img class="card-img" src="images/everyday/kasa.webp?v=20260902" alt="かさ" decoding="async">
+    <span class="label">かさ</span>
+  </div>
+  <div class="card" data-item="koppu" data-sound="sounds/everyday/koppu.mp3" data-label="コップ">
+    <img class="card-img" src="images/everyday/koppu.webp?v=20260902" alt="コップ" decoding="async">
+    <span class="label">コップ</span>
+  </div>
+  <div class="card" data-item="spoon" data-sound="sounds/everyday/spoon.mp3" data-label="スプーン">
+    <img class="card-img" src="images/everyday/spoon.webp?v=20260902" alt="スプーン" decoding="async">
+    <span class="label">スプーン</span>
+  </div>
+  <div class="card" data-item="fork" data-sound="sounds/everyday/fork.mp3" data-label="フォーク">
+    <img class="card-img" src="images/everyday/fork.webp?v=20260902" alt="フォーク" decoding="async">
+    <span class="label">フォーク</span>
+  </div>
+  <div class="card" data-item="isu" data-sound="sounds/everyday/isu.mp3" data-label="いす" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/isu.webp?v=20260902" alt="いす" decoding="async">
+    <span class="label">いす</span>
+  </div>
+  <div class="card" data-item="tsukue" data-sound="sounds/everyday/tsukue.mp3" data-label="つくえ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/tsukue.webp?v=20260902" alt="つくえ" decoding="async">
+    <span class="label">つくえ</span>
+  </div>
+  <div class="card" data-item="tokei" data-sound="sounds/everyday/tokei.mp3" data-label="とけい" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/tokei.webp?v=20260902" alt="とけい" decoding="async">
+    <span class="label">とけい</span>
+  </div>
+  <div class="card" data-item="kaban" data-sound="sounds/everyday/kaban.mp3" data-label="かばん" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/kaban.webp?v=20260902" alt="かばん" decoding="async">
+    <span class="label">かばん</span>
+  </div>
+  <div class="card" data-item="haburashi" data-sound="sounds/everyday/haburashi.mp3" data-label="はぶらし" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/haburashi.webp?v=20260902" alt="はぶらし" decoding="async">
+    <span class="label">はぶらし</span>
+  </div>
+  <div class="card" data-item="taoru" data-sound="sounds/everyday/taoru.mp3" data-label="タオル" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/taoru.webp?v=20260902" alt="タオル" decoding="async">
+    <span class="label">タオル</span>
+  </div>
+  <div class="card" data-item="enpitsu" data-sound="sounds/everyday/enpitsu.mp3" data-label="えんぴつ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/enpitsu.webp?v=20260902" alt="えんぴつ" decoding="async">
+    <span class="label">えんぴつ</span>
+  </div>
+  <div class="card" data-item="hasami" data-sound="sounds/everyday/hasami.mp3" data-label="はさみ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/hasami.webp?v=20260902" alt="はさみ" decoding="async">
+    <span class="label">はさみ</span>
+  </div>
+  <div class="card" data-item="denwa" data-sound="sounds/everyday/denwa.mp3" data-label="でんわ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/denwa.webp?v=20260902" alt="でんわ" decoding="async">
+    <span class="label">でんわ</span>
+  </div>
+  <div class="card" data-item="kagi" data-sound="sounds/everyday/kagi.mp3" data-label="かぎ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/kagi.webp?v=20260902" alt="かぎ" decoding="async">
+    <span class="label">かぎ</span>
+  </div>
+  <div class="card" data-item="tissue" data-sound="sounds/everyday/tissue.mp3" data-label="ティッシュ" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/tissue.webp?v=20260902" alt="ティッシュ" decoding="async">
+    <span class="label">ティッシュ</span>
+  </div>
+  <div class="card" data-item="bed" data-sound="sounds/everyday/bed.mp3" data-label="ベッド" hidden>
+    <img class="card-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="images/everyday/bed.webp?v=20260902" alt="ベッド" decoding="async">
+    <span class="label">ベッド</span>
+  </div>
+</main>
+
+<footer></footer>
+
+<div id="overlay">
+  <img id="overlay-img" src="" alt="">
+  <span id="overlay-label"></span>
+</div>
+
+<script src="vehicle-playback.js"></script>
+<script src="catalog-image-page.js?v=20260827-tap2"></script>
+
+<script src="app-shell.js?v=20260828-newcats"></script>
+<script src="catalog-pagination.js?v=20260827-tap2"></script>
+</body>
+</html>

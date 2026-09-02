@@ -108,9 +108,13 @@ body.zukan-page-doubutsu { --scene-image: url("images/backgrounds/doubutsu.webp"
 body.zukan-page-norimono { --scene-image: url("images/backgrounds/norimono.webp"); }
 body.zukan-page-umi { --scene-image: url("images/backgrounds/umi.webp"); --control-main: #079cc2; --control-dark: #045d83; }
 body.zukan-page-tabemono { --scene-image: url("images/backgrounds/tabemono.webp"); --control-main: #ed6339; --control-dark: #a1301c; }
-body.zukan-top .card[data-cat="umi"], body.zukan-top .card[data-cat="tabemono"] { background: #fff; }
+body.zukan-page-mushi { --scene-image: url("images/backgrounds/mushi.webp"); --control-main: #46a536; --control-dark: #205d22; }
+body.zukan-page-minomawari { --scene-image: url("images/backgrounds/minomawari.webp"); --control-main: #1976d2; --control-dark: #0d47a1; }
+body.zukan-top .card[data-cat="umi"], body.zukan-top .card[data-cat="tabemono"], body.zukan-top .card[data-cat="mushi"], body.zukan-top .card[data-cat="minomawari"] { background: #fff; }
 body.zukan-top .card[data-cat="umi"] .label { background: rgba(255,255,255,.9); color: #0879a4; font-size: clamp(.8rem,3.8vw,1.15rem); }
 body.zukan-top .card[data-cat="tabemono"] .label { background: rgba(255,255,255,.9); color: #c33e24; }
+body.zukan-top .card[data-cat="mushi"] .label { background: rgba(255,255,255,.9); color: #28752d; }
+body.zukan-top .card[data-cat="minomawari"] .label { background: rgba(255,255,255,.9); color: #1558a0; }
 body.zukan-top { background-attachment: fixed; }
 body.zukan-scene header {
   width: min(100%, 480px);
@@ -172,6 +176,8 @@ body.zukan-page-kudamono { --control-main: #d93832; --control-dark: #8e1e1b; }
 body.zukan-page-yasai    { --control-main: #2e9b42; --control-dark: #176b28; }
 body.zukan-page-doubutsu { --control-main: #2f9b43; --control-dark: #176629; }
 body.zukan-page-norimono { --control-main: #1674c8; --control-dark: #0b4d8a; }
+body.zukan-page-mushi { --control-main: #46a536; --control-dark: #205d22; }
+body.zukan-page-minomawari { --control-main: #1976d2; --control-dark: #0d47a1; }
 
 .illustrated-control {
   border: 3px solid #fff !important;
