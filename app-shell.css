@@ -110,11 +110,13 @@ body.zukan-page-umi { --scene-image: url("images/backgrounds/umi.webp"); --contr
 body.zukan-page-tabemono { --scene-image: url("images/backgrounds/tabemono.webp"); --control-main: #ed6339; --control-dark: #a1301c; }
 body.zukan-page-mushi { --scene-image: url("images/backgrounds/mushi.webp"); --control-main: #46a536; --control-dark: #205d22; }
 body.zukan-page-minomawari { --scene-image: url("images/backgrounds/minomawari.webp"); --control-main: #1976d2; --control-dark: #0d47a1; }
-body.zukan-top .card[data-cat="umi"], body.zukan-top .card[data-cat="tabemono"], body.zukan-top .card[data-cat="mushi"], body.zukan-top .card[data-cat="minomawari"] { background: #fff; }
+body.zukan-page-karada { --scene-image: url("images/backgrounds/karada.webp"); --control-main: #ef5350; --control-dark: #a52c35; }
+body.zukan-top .card[data-cat="umi"], body.zukan-top .card[data-cat="tabemono"], body.zukan-top .card[data-cat="mushi"], body.zukan-top .card[data-cat="minomawari"], body.zukan-top .card[data-cat="karada"] { background: #fff; }
 body.zukan-top .card[data-cat="umi"] .label { background: rgba(255,255,255,.9); color: #0879a4; font-size: clamp(.8rem,3.8vw,1.15rem); }
 body.zukan-top .card[data-cat="tabemono"] .label { background: rgba(255,255,255,.9); color: #c33e24; }
 body.zukan-top .card[data-cat="mushi"] .label { background: rgba(255,255,255,.9); color: #28752d; }
 body.zukan-top .card[data-cat="minomawari"] .label { background: rgba(255,255,255,.9); color: #1558a0; }
+body.zukan-top .card[data-cat="karada"] .label { background: rgba(255,255,255,.9); color: #c5333d; }
 body.zukan-top { background-attachment: fixed; }
 body.zukan-scene header {
   width: min(100%, 480px);

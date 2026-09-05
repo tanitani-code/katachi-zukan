@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>からだずかん</title>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#eaf8ff}html,body{height:100dvh;overflow:hidden}body{background:var(--bg);font-family:"Hiragino Maru Gothic ProN","BIZ UDPGothic",sans-serif;display:flex;flex-direction:column;align-items:center;touch-action:manipulation}nav{width:100%;max-width:480px;padding:clamp(6px,1.5dvh,12px) 16px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}.nav-back,.bgm-toggle{display:inline-flex;align-items:center;justify-content:center;width:clamp(34px,8vw,42px);height:clamp(34px,8vw,42px);font-size:1.3rem;font-weight:700;color:#d84343;text-decoration:none;background:#fff;border-radius:50%;box-shadow:0 2px 8px #0002;border:none;cursor:pointer}header{flex-shrink:0;width:100%;text-align:center;padding:clamp(3px,.7dvh,7px) 16px}header h1{font-size:clamp(1.2rem,5vw,2rem);color:#d84343}main{flex:1;min-height:0;width:100%;max-width:480px}footer{flex-shrink:0;padding:clamp(4px,1dvh,10px) 10px clamp(7px,1.5dvh,14px)}</style>
+<link rel="stylesheet" href="app-shell.css?v=20260906-finepoints3"><link rel="stylesheet" href="karada-explorer.css?v=20260906-finepoints3"></head>
+<body><nav><a class="nav-back" href="index.html" aria-label="トップへ戻る">×</a><div style="display:flex;gap:6px"><button id="fxToggle" class="fx-toggle" aria-label="エフェクト切替"></button><button id="bgmToggle" class="bgm-toggle" aria-label="BGM切り替え">🔊</button></div></nav>
+<audio id="bgm" src="sounds/bgm_karada.mp3" loop preload="auto"></audio><script src="effects.js"></script>
+<header><h1>からだずかん</h1></header>
+<main class="body-explorer"><div class="body-viewport"><div class="body-track">
+<section class="body-page" data-kind="face"><div class="body-page-title">かお</div><img class="body-figure" src="images/body/explorer-face.webp?v=20260905" alt="かお"><svg class="body-lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg></section>
+<section class="body-page" data-kind="body"><div class="body-page-title">からだ</div><img class="body-figure" src="images/body/explorer-body.webp?v=20260905" alt="からだ"><svg class="body-lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg></section>
+<section class="body-page" data-kind="hands"><div class="body-page-title">てとあし</div><img class="body-figure" src="images/body/explorer-hands-feet.webp?v=20260905" alt="てとあし"><svg class="body-lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg></section>
+</div></div></main><footer></footer>
+<script src="app-shell.js?v=20260906-finepoints3"></script><script src="karada-explorer.js?v=20260906-finepoints3"></script></body></html>

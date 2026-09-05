@@ -1,0 +1,94 @@
+/* からだ図鑑専用：大きな人体図＋タップできる名称と矢印 */
+body.zukan-page-karada main.body-explorer {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding: clamp(3px, .7dvh, 7px) clamp(4px, 1vw, 7px);
+  max-width: 520px;
+  touch-action: pan-y;
+}
+.body-viewport { width: 100%; height: 100%; overflow: hidden; border-radius: 22px; }
+.body-track {
+  display: flex; width: 100%; height: 100%;
+  will-change: transform;
+  transition: transform 260ms cubic-bezier(.22,.75,.3,1);
+}
+.body-track.dragging { transition: none; }
+.body-page {
+  position: relative; flex: 0 0 100%; height: 100%;
+  overflow: hidden; border: 2px solid rgba(255,255,255,.86);
+  border-radius: 22px;
+  background: linear-gradient(145deg,rgba(255,255,255,.94),rgba(225,247,255,.90));
+  box-shadow: 0 5px 16px rgba(35,72,106,.22);
+}
+.body-page-title {
+  position: absolute; z-index: 6; top: 1.4%; left: 50%; transform: translateX(-50%);
+  min-width: 34%; padding: .22em .8em;
+  border: 3px solid #fff; border-radius: 999px;
+  background: #ef5350; color: #fff;
+  text-align: center; font-weight: 900;
+  font-size: clamp(.82rem,3.8vw,1.18rem); letter-spacing: .1em;
+  box-shadow: 0 3px 0 #a52c35;
+}
+.body-figure {
+  position: absolute; z-index: 1; pointer-events: none;
+  object-fit: contain; filter: drop-shadow(0 5px 6px rgba(29,58,78,.17));
+}
+.body-page[data-kind="face"] .body-figure { left: 19%; top: 8%; width: 62%; height: 88%; }
+.body-page[data-kind="body"] .body-figure { left: 18%; top: 7%; width: 64%; height: 91%; }
+.body-page[data-kind="hands"] .body-figure { left: 16%; top: 8%; width: 68%; height: 88%; }
+.body-lines { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.body-line { stroke: #087fba; stroke-width: 2.2; vector-effect: non-scaling-stroke; filter: drop-shadow(0 1px 0 #fff); transition: stroke .12s,stroke-width .12s; }
+.body-target { fill: #fff; stroke: #087fba; stroke-width: 2.2; vector-effect: non-scaling-stroke; transition: fill .12s,stroke .12s,r .12s; }
+.body-hotspot {
+  position: absolute; z-index: 5; left: var(--lx); top: var(--ly);
+  transform: translate(-50%,-50%);
+  width: clamp(58px,17vw,82px); min-height: clamp(34px,6dvh,46px);
+  padding: .2em .25em;
+  border: 3px solid #fff; border-radius: 999px;
+  background: #19a9df; color: #fff;
+  font-family: inherit; font-weight: 900;
+  font-size: clamp(.73rem,3.25vw,1rem); line-height: 1;
+  box-shadow: 0 3px 0 #0878a7,0 5px 9px rgba(0,0,0,.16);
+  cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: transform .1s,background .1s,filter .1s;
+}
+.body-hotspot:active { transform: translate(-50%,-50%) scale(.9); }
+.body-hotspot.active {
+  background: #ff5b4d; box-shadow: 0 3px 0 #aa251f,0 0 0 6px rgba(255,222,49,.72);
+  animation: body-button-pop .42s ease;
+}
+.body-line.active { stroke:#ff4b3e; stroke-width:4; }
+.body-target.active { fill:#ffe22f; stroke:#ff4b3e; stroke-width:1.8; animation:body-target-pulse .65s ease 2; }
+@keyframes body-button-pop { 45%{transform:translate(-50%,-50%) scale(1.16)} }
+@keyframes body-target-pulse { 50%{filter:drop-shadow(0 0 7px #ffeb3b)} }
+body.zukan-page-karada footer.bottom-nav {
+  width: 100%;
+  max-width: 480px;
+  min-height: clamp(60px,8.5dvh,76px);
+  display: grid !important;
+  grid-template-columns: clamp(58px,16vw,68px) 1fr clamp(58px,16vw,68px);
+  align-items: center;
+  justify-items: center;
+  gap: 10px;
+  padding-inline: clamp(12px,4vw,22px);
+}
+body.zukan-page-karada footer.bottom-nav > .body-page-arrow:first-child { justify-self: start; }
+body.zukan-page-karada footer.bottom-nav > .body-page-arrow:last-child { justify-self: end; }
+.body-page-arrow {
+  display:inline-grid;place-items:center;width:clamp(46px,12vw,58px);height:clamp(46px,12vw,58px);
+  border:3px solid #fff;border-radius:50%;background:#ef5350;color:#fff;
+  box-shadow:0 4px 0 #a52c35;border-style:solid;cursor:pointer;
+}
+.body-page-arrow svg{width:72%;height:72%;fill:#fff;filter:drop-shadow(0 2px 0 #a52c35)}
+.body-page-center{display:flex;flex-direction:column;align-items:center;gap:3px}
+.body-page-dots{display:flex;gap:8px}
+.body-page-dot{width:14px;height:14px;padding:0;border:2px solid #fff;border-radius:50%;background:#72c8e8;box-shadow:0 1px 3px #24566b}
+.body-page-dot.active{width:19px;height:19px;background:#ef5350;transform:translateY(-2px)}
+@media (max-height:700px){
+  .body-hotspot{min-height:30px;font-size:.7rem}
+  .body-page-title{font-size:.76rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .body-track,.body-hotspot,.body-line,.body-target{transition:none!important;animation:none!important}
+}
